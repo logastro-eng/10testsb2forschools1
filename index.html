@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2 First for Schools - Full Reading & Use of English</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel para compilar JSX en el navegador -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .text-content p { margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Iconos ---
+        const ChevronRight = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
+        const ChevronLeft = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>;
+        const CheckCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>;
+        const XCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>;
+        const BookOpen = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>;
+        const AlertCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>;
+
+        // --- Base de Datos Estructurada por Partes (Optimizada y Limpia) ---
+        const examDatabase = {
+            part1: [
+                {
+                    id: 1,
+                    title: "The rise of e-sports",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "Competitive video gaming, known as e-sports, has {0} into a massive global industry. Tournaments are now held in huge arenas, drawing {1} of thousands of fans. Players are treated like traditional athletes, and the very best can earn a substantial {2} of money through sponsorships and prize pools. In the past, video games were often {3} as a solitary activity, but e-sports are highly social. Teams must communicate effectively to {4} their opponents. Critics argue that it shouldn't be classified as a sport because it lacks physical {5}. However, supporters point out that it requires incredible reflexes, strategic thinking, and dedication. As technology continues to improve, it is highly {6} that e-sports will only continue to grow in popularity, perhaps even {7} traditional sports in some demographics.",
+                    options: [
+                        ["developed", "grown", "turned", "expanded"],
+                        ["crowds", "audiences", "tens", "groups"],
+                        ["amount", "number", "deal", "figure"],
+                        ["regarded", "believed", "thought", "noticed"],
+                        ["win", "beat", "defeat", "overcome"],
+                        ["effort", "action", "exercise", "exertion"],
+                        ["likely", "possible", "probable", "expected"],
+                        ["overtaking", "passing", "beating", "winning"]
+                    ],
+                    answers: [0, 2, 0, 0, 2, 3, 0, 0]
+                },
+                {
+                    id: 2,
+                    title: "A new hobby: Bouldering",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "Indoor rock climbing, specifically a type called bouldering, is becoming a very popular {0} for teenagers. Unlike traditional climbing, bouldering doesn't require ropes or harnesses because you don't climb very {1}. Instead, the walls are shorter and there are thick mats on the floor to {2} your fall. It is a fantastic way to build physical strength, but it also requires a great {3} of mental focus. You have to figure out the best {4} to get to the top, almost like solving a puzzle. Many young people find it more engaging than just running on a treadmill. It's also incredibly social; climbers often stand around the walls, {5} advice and cheering each other on. If you're looking for a fun way to {6} fit and make new friends, bouldering is definitely worth a {7}.",
+                    options: [
+                        ["pastime", "game", "action", "leisure"],
+                        ["tall", "high", "long", "far"],
+                        ["protect", "save", "cushion", "defend"],
+                        ["quantity", "amount", "deal", "level"],
+                        ["route", "track", "direction", "street"],
+                        ["giving", "sharing", "telling", "passing"],
+                        ["keep", "make", "hold", "stay"],
+                        ["go", "try", "test", "shot"]
+                    ],
+                    answers: [0, 1, 2, 2, 0, 1, 0, 1]
+                },
+                {
+                    id: 3,
+                    title: "The impact of social media on friendships",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "It is undeniable that social media has completely {0} the way teenagers communicate. Platforms like Instagram and TikTok allow us to stay in {1} with friends constantly, regardless of where they are in the world. We can share photos, videos, and daily updates instantly. However, some psychologists {2} that this digital connection might be superficial. They argue that spending too much time online can {3} to a feeling of isolation in real life. When we only see the highlights of other people's lives, it is easy to feel that we are missing {4}. Furthermore, online interactions lack the body language and tone of voice that are crucial for deep, meaningful conversations. Therefore, it is important to {5} a balance. While social media is a useful tool, we must {6} an effort to spend quality time with our friends face-to-face, to ensure our relationships remain {7}.",
+                    options: [
+                        ["transformed", "transferred", "transported", "translated"],
+                        ["reach", "touch", "contact", "hold"],
+                        ["warn", "threaten", "advise", "notice"],
+                        ["cause", "bring", "lead", "result"],
+                        ["out", "up", "off", "away"],
+                        ["strike", "hit", "make", "find"],
+                        ["do", "put", "make", "give"],
+                        ["strong", "heavy", "tough", "hard"]
+                    ],
+                    answers: [0, 1, 0, 2, 0, 0, 2, 0]
+                },
+                {
+                    id: 4,
+                    title: "Starting a vlog",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "Many teenagers are now {0} their own vlogs. It's a great way to {1} your interests with the world. You don't need expensive {2} to begin; a smartphone is usually enough. The most important thing is to be {3} and talk about things you genuinely care about. It can take time to {4} an audience, so you need to be patient. Don't get discouraged if you only get a {5} views at first. Remember to interact with your viewers by replying to their {6}. Who knows, you might even {7} a famous influencer one day!",
+                    options: [
+                        ["doing", "creating", "making", "building"],
+                        ["share", "divide", "split", "give"],
+                        ["tools", "machinery", "equipment", "devices"],
+                        ["yourself", "natural", "true", "real"],
+                        ["grow", "build", "increase", "raise"],
+                        ["few", "couple", "little", "small"],
+                        ["remarks", "comments", "notes", "messages"],
+                        ["turn", "become", "result", "grow"]
+                    ],
+                    answers: [1, 0, 2, 1, 1, 0, 1, 1]
+                },
+                {
+                    id: 5,
+                    title: "School trips",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "School trips are an essential part of education. They give students the {0} to learn outside the classroom. Whether it's a visit to a museum or a nature reserve, these trips bring subjects to {1}. Students often {2} the experience more than regular lessons because it is hands-on. Teachers spend a lot of time {3} these excursions to ensure they are both safe and educational. During the trip, students must {4} attention to the guide and follow instructions carefully. It also helps them to {5} better relationships with their classmates. When they return, they usually have to {6} a project about what they have learned. These memories often {7} a lifetime.",
+                    options: [
+                        ["chance", "occasion", "possibility", "moment"],
+                        ["reality", "life", "existence", "world"],
+                        ["prefer", "delight", "appreciate", "enjoy"],
+                        ["organising", "making", "creating", "doing"],
+                        ["give", "pay", "keep", "hold"],
+                        ["develop", "grow", "invent", "progress"],
+                        ["complete", "fill", "write", "make"],
+                        ["stay", "keep", "last", "continue"]
+                    ],
+                    answers: [0, 1, 3, 0, 1, 0, 0, 2]
+                },
+                {
+                    id: 6,
+                    title: "Teen sleep",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "Getting enough sleep is crucial for teenagers, yet many fail to get the recommended eight hours. A lack of sleep can {0} your mood and your ability to concentrate at school. One major {1} of this problem is the use of screens before bedtime. The blue light from smartphones can {2} you awake for longer. Experts advise teenagers to {3} off all electronic devices at least an hour before going to sleep. Instead, reading a book or listening to relaxing music can help you {4} down. It is also a good idea to {5} to a regular sleep schedule, even on weekends. If you {6} a habit of going to bed at the same time every night, your body will naturally know when it's time to rest. You will wake up feeling much more {7}.",
+                    options: [
+                        ["affect", "effect", "result", "cause"],
+                        ["reason", "purpose", "cause", "origin"],
+                        ["make", "keep", "stay", "hold"],
+                        ["turn", "shut", "close", "break"],
+                        ["calm", "wind", "slow", "cool"],
+                        ["keep", "stick", "hold", "follow"],
+                        ["form", "do", "make", "create"],
+                        ["refreshed", "recovered", "renewed", "restored"]
+                    ],
+                    answers: [0, 2, 1, 0, 1, 1, 2, 0]
+                },
+                {
+                    id: 7,
+                    title: "Fast fashion",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "Many teenagers love buying new clothes, but 'fast fashion' has a massive impact on the environment. Clothes are produced quickly and cheaply to keep {0} with the latest trends. However, this means they are often thrown {1} after being worn only a few times. The fashion industry is responsible for a huge {2} of water pollution and carbon emissions. Fortunately, a growing number of young people are becoming {3} of this issue. They are starting to shop at second-hand stores or use apps to {4} clothes with friends. Another option is to repair or {5} old clothes instead of throwing them in the bin. By making small changes to our shopping habits, we can make a big {6} to the planet. It's time to choose quality {7} quantity.",
+                    options: [
+                        ["on", "up", "out", "in"],
+                        ["away", "out", "off", "up"],
+                        ["amount", "number", "deal", "total"],
+                        ["known", "familiar", "conscious", "aware"],
+                        ["change", "swap", "shift", "switch"],
+                        ["fix", "mend", "heal", "cure"],
+                        ["difference", "change", "effect", "impact"],
+                        ["against", "over", "above", "instead"]
+                    ],
+                    answers: [1, 0, 0, 3, 1, 1, 0, 1]
+                },
+                {
+                    id: 8,
+                    title: "Learning to drive",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "For many teenagers, turning seventeen means they can finally {0} learning to drive. Getting a driving licence is a major milestone because it gives you a lot of {1} and independence. However, it can also be quite an expensive process, as you have to {2} for lessons and the test itself. When you first get behind the {3}, it is normal to feel nervous. There is so much to remember, from checking your mirrors to changing gears. It usually takes several months of practice before you feel truly {4}. Many learners also practice with their parents, which can sometimes {5} to arguments! Once you pass your test, it is vital to remember that driving is a huge {6}. You must always obey the speed {7} and stay safe on the roads.",
+                    options: [
+                        ["start", "begin", "open", "initiate"],
+                        ["freedom", "choice", "space", "opening"],
+                        ["spend", "afford", "pay", "cost"],
+                        ["wheel", "seat", "screen", "control"],
+                        ["positive", "confident", "brave", "secure"],
+                        ["cause", "lead", "result", "bring"],
+                        ["duty", "task", "responsibility", "job"],
+                        ["limits", "rules", "laws", "bounds"]
+                    ],
+                    answers: [0, 0, 2, 0, 1, 1, 2, 0]
+                },
+                {
+                    id: 9,
+                    title: "Skateboarding",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "Skateboarding is a fantastic way for teenagers to keep fit. It is not exactly a new sport, but it has recently {0} more popular than ever. Not only does it improve balance and coordination, but it also helps build {1}. When you are learning to skate, you are {2} to fall off a few times. However, getting back on the board teaches resilience. Many towns have built skateparks, which provide a safe {3} for young people to practice. It's a great place to make friends who {4} the same interests. If you decide to take {5} this hobby, make sure you wear protective gear like a helmet and knee pads. You will soon realise that there is no better {6} than mastering a new trick. It just takes time and {7}.",
+                    options: [
+                        ["turned", "become", "grown", "developed"],
+                        ["belief", "trust", "confidence", "hope"],
+                        ["sure", "bound", "certain", "definite"],
+                        ["situation", "background", "environment", "condition"],
+                        ["share", "divide", "split", "join"],
+                        ["in", "up", "on", "off"],
+                        ["feeling", "sensing", "touching", "thinking"],
+                        ["patience", "waiting", "calm", "delay"]
+                    ],
+                    answers: [1, 2, 1, 2, 0, 1, 0, 0]
+                },
+                {
+                    id: 10,
+                    title: "Studying abroad",
+                    instructions: "For questions 1-8, read the text below and decide which answer (A, B, C or D) best fits each gap.",
+                    content: "Studying abroad is an incredible experience that can change your life. It gives you the chance to {0} yourself in a new culture and learn a new language. At first, it can be quite daunting to live far {1} from your family and friends. You might experience culture shock and feel homesick for a {2}. However, these feelings usually pass as you start to make new friends and get {3} to your new surroundings. You will also learn to be more independent, which is an important {4} for the future. You will have to manage your own budget and figure out how to do your laundry! When you return home, you will find that you have {5} as a person. Many employers look favourably on candidates who have studied abroad because it shows they are willing to take {6} new challenges. If you ever get the opportunity, you should absolutely {7} for it!",
+                    options: [
+                        ["sink", "drop", "immerse", "dive"],
+                        ["away", "out", "off", "long"],
+                        ["period", "while", "time", "moment"],
+                        ["familiar", "adapted", "used", "known"],
+                        ["skill", "talent", "ability", "gift"],
+                        ["increased", "raised", "expanded", "grown"],
+                        ["on", "up", "over", "in"],
+                        ["go", "make", "do", "try"]
+                    ],
+                    answers: [2, 0, 1, 2, 0, 3, 0, 0]
+                }
+            ],
+            part2: [
+                {
+                    id: 1,
+                    title: "Learning to play the guitar",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "Many teenagers want to learn a musical instrument, and the guitar is one of the {0} popular choices. You don't need to spend a {1} of money on your first guitar. A second-hand one is usually perfectly fine, as {2} as it is in good condition. Learning to play takes time and patience, {3} you shouldn't give up if it seems difficult at first. There are plenty of free tutorials online {4} can help you learn the basic chords. Once you have learnt a {5} songs, you might even want to start a band with your friends. Playing music with others is not {6} fun, but it also improves your listening skills. Just keep practicing, and you will soon see a big improvement {7} your playing.",
+                    answers: [["most"], ["lot"], ["long"], ["so", "therefore"], ["which", "that"], ["few"], ["only"], ["in"]]
+                },
+                {
+                    id: 2,
+                    title: "A surprising school trip",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "Last month, our history teacher told us that we were {0} on a school trip to a local museum. To be honest, most of us {1} not looking forward to it. We thought it would be incredibly boring. However, when we arrived, we quickly realised that we had {2} wrong. The museum had recently been renovated and it was full {3} interactive exhibits. Instead of just reading signs, we were able to participate {4} virtual reality experiences. We actually felt like we had travelled back in time! The guide was fantastic and he answered all the questions {5} we asked him. By the end of the day, everyone agreed that it was the best school trip we had {6} had. It just goes to show that you shouldn't judge a book {7} its cover.",
+                    answers: [["going"], ["were"], ["been"], ["of"], ["in"], ["that", "which"], ["ever"], ["by"]]
+                },
+                {
+                    id: 3,
+                    title: "The benefits of learning to code",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "In recent years, programming has become an increasingly popular subject in schools. Knowing how to write code gives teenagers a significant advantage {0} it comes to finding a job in the future. However, the benefits go far beyond just career opportunities. Learning to code teaches you {1} to think logically and solve complex problems. When a program doesn't work, you have to figure {2} why and fix it, which builds resilience. Furthermore, it is a highly creative process. With code, you can build your {3} websites, apps, or even video games from scratch. Many teenagers find that coding is {4} fun that they do it as a hobby in their free time. There are plenty of free resources available online, so anyone can start learning, regardless {5} their background. If you have never tried coding {6}, you should definitely give it a go. You might discover {7} hidden talent!",
+                    answers: [["when"], ["how"], ["out"], ["own"], ["so"], ["of"], ["before"], ["a"]]
+                },
+                {
+                    id: 4,
+                    title: "Keeping a diary",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "Keeping a diary or journal is a habit that can have a very positive impact {0} your mental health. Writing down your thoughts and feelings is a great way to process your emotions. It can help you make sense of difficult situations and reduce stress. Many teenagers find it helpful to write in their diary before going to bed, as it helps {1} clear their minds. You don't have to write a lot; even just a few sentences a day can make a big {2}. You can write about what happened during the day, your hopes for the future, or anything else {3} is on your mind. A diary is completely private, {4} you can be completely honest without worrying about what other people might think. Looking back at old entries can also be very interesting. It allows you to see how {5} you have grown and changed over time. If you have never kept a diary before, I highly recommend giving it a {6}. You might find that it becomes an essential part {7} your daily routine.",
+                    answers: [["on", "upon"], ["them"], ["difference"], ["that", "which"], ["so"], ["much"], ["try", "go"], ["of"]]
+                },
+                {
+                    id: 5,
+                    title: "Getting a part-time job",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "Many older teenagers decide to get a part-time job while they are still at school. This is a great way to earn some pocket money and gain valuable work experience. Popular jobs for teenagers include working in a café, delivering newspapers, or babysitting. Having a job teaches you how to manage your time effectively, {0} you have to balance your work with your studies. It also helps you develop communication skills, as you will often have to deal {1} customers. Of course, it is important not to let your job interfere {2} your schoolwork. Education should always come first. Therefore, you should try to find a job with flexible hours. Working can be tiring, but it gives you a sense of independence. You will learn the value of money and realise {3} hard it is to earn it. When you apply for a job in the future, having previous experience will definitely give you an advantage {4} other candidates. So, {5} you have the time, getting a part-time job is well {6} considering. It will prepare you for the real {7}.",
+                    answers: [["because", "as", "since"], ["with"], ["with"], ["how"], ["over"], ["if", "provided"], ["worth"], ["world"]]
+                },
+                {
+                    id: 6,
+                    title: "Climate Change",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "Climate change is one of the biggest challenges facing our planet today. The Earth's temperature is rising, and this is largely due {0} human activities. The burning of fossil fuels, such as coal and oil, releases greenhouse gases into the atmosphere. These gases trap heat from the sun, causing the planet to warm up. If we don't take action soon, the consequences could be disastrous. Sea levels will continue to rise, {1} will lead to flooding in coastal areas. Extreme weather events, such {2} hurricanes and droughts, will become more frequent and severe. Everyone needs to do their part to protect the environment. We can start by reducing our energy consumption and recycling as {3} as possible. Using public transport or cycling instead of driving can also help reduce our carbon footprint. Governments must also invest {4} renewable energy sources, like solar and wind power. It is our responsibility to look {5} our planet for future generations. We cannot rely {6} others to solve this problem for us. The time to act is {7}.",
+                    answers: [["to"], ["which"], ["as"], ["much"], ["in"], ["after"], ["on", "upon"], ["now"]]
+                },
+                {
+                    id: 7,
+                    title: "A weekend in London",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "Last month, my family and I went on a weekend trip to London. It was my first time visiting the capital, and I was completely amazed {0} the size of the city. We arrived on Friday evening and checked {1} our hotel. The next day, we woke up early to go sightseeing. We visited the Tower of London, {2} we learned a lot about British history. Afterwards, we took a boat trip down the River Thames. The views from the boat were spectacular, even {3} the weather wasn't great. On Sunday, we went shopping in Oxford Street. There were so {4} people there that it was difficult to walk! Before catching our train home, we had dinner at a lovely Italian restaurant. It was a tiring weekend, but we had a wonderful time. I am really looking forward {5} going back one day. There is still so {6} to see and do! I would recommend it to {7}.",
+                    answers: [["by", "at"], ["into"], ["where"], ["though", "if"], ["many"], ["to"], ["much"], ["anyone", "everybody", "everyone"]]
+                },
+                {
+                    id: 8,
+                    title: "Technology in schools",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "The use of technology in education has increased dramatically in recent years. Many schools now use interactive whiteboards {0} of traditional blackboards. Students often use tablets or laptops to complete their assignments and do research {1} the internet. This makes learning much more engaging and interactive. However, there are also some disadvantages. For instance, students can easily be distracted {2} social media or games during class. Furthermore, relying too {3} on technology can affect students' handwriting and spelling skills. Some teachers also argue that there is less face-to-face interaction {4} students and teachers nowadays. Despite these concerns, it is clear that technology is here to {5}. The challenge for schools is to find the right balance {6} traditional teaching methods and modern technology. Ultimately, technology should be used as a tool to enhance learning, {7} replace it entirely.",
+                    answers: [["instead"], ["on"], ["by"], ["much", "heavily"], ["between"], ["stay"], ["between"], ["not", "rather"]]
+                },
+                {
+                    id: 9,
+                    title: "Volunteering at an animal shelter",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "Last summer, I decided to do some volunteer work at a local animal shelter. I have {0} loved animals, so it seemed like the perfect opportunity for me. The shelter looks {1} dogs and cats that have been abandoned. My main job was to clean the cages and take the dogs {2} a walk. It was hard work, but very rewarding. I also helped feed the animals and played with {3} in the yard. I was surprised by how {4} food the shelter goes through every week. They rely heavily {5} donations from the public. I made some great friends there, both human and animal! If you have some spare time, you ought {6} consider volunteering. It is a fantastic way to {7} a difference in your community.",
+                    answers: [["always"], ["after"], ["for"], ["them"], ["much"], ["on", "upon"], ["to"], ["make"]]
+                },
+                {
+                    id: 10,
+                    title: "The power of reading",
+                    instructions: "For questions 1-8, read the text below and think of the word which best fits each gap. Use only one word in each gap.",
+                    content: "Despite the popularity of video games and social media, reading is still a wonderful hobby. Reading regularly can help you expand your vocabulary, {0} is very useful for your exams. It also allows you to escape {1} reality for a while and immerse yourself in a different world. Whether you prefer fantasy novels {2} non-fiction books, there is something out there for everyone. Some people complain that they don't have enough time to read. However, if you try reading for just 15 minutes a day, you will be surprised at how {3} pages you can get through. You can read on the bus, {4} you are waiting for an appointment, or just before you go to sleep. Getting into the habit of reading is {5} of the best things you can do for your brain. In {6} to improving your memory, it also reduces stress. So, why {7} pick up a book today?",
+                    answers: [["which"], ["from"], ["or"], ["many"], ["while", "when", "whilst"], ["one"], ["addition"], ["not"]]
+                }
+            ],
+            part3: [
+                {
+                    id: 1,
+                    title: "A career in coding",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "Learning to write computer code is becoming increasingly {0} (IMPORTANT) in today's digital world. Many schools now offer coding classes as part of their curriculum. Being a programmer requires a lot of {1} (CREATE) and logical thinking. It is not just about typing numbers; it's about finding {2} (SOLVE) to complex problems. A career in software {3} (DEVELOP) can be very rewarding, both financially and intellectually. However, it can also be quite {4} (STRESS) when there are tight deadlines or unexpected bugs in the system. Programmers must be very {5} (PATIENCE) and willing to continuously learn new languages. For those who are {6} (PASSION) about technology, it is an ideal path. It offers the {7} (POSSIBLE) to shape the future of how we interact with machines.",
+                    answers: [["important"], ["creativity"], ["solutions"], ["development"], ["stressful"], ["patient"], ["passionate"], ["possibility"]]
+                },
+                {
+                    id: 2,
+                    title: "Becoming a successful vlogger",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "Many teenagers dream of becoming a famous vlogger on platforms like YouTube. It seems like a very {0} (GLAMOUR) lifestyle, getting paid to talk about your hobbies. However, achieving {1} (SUCCEED) in this field requires a huge amount of hard work. First, you need to produce content that is highly {2} (ENTERTAIN) to keep your viewers hooked. You also need to have the {3} (ABLE) to edit videos professionally, which can take hours of practice. Furthermore, dealing with negative comments from the public can be very {4} (COURAGE) for a young creator. It is essential to ignore the 'haters' and focus on the {5} (POSITIVITY) feedback from your true fans. Consistency is also key; uploading videos on a {6} (REGULAR) basis is the only way to build a loyal audience. If you are truly {7} (DEDICATE), it can be a wonderful way to express yourself.",
+                    answers: [["glamorous"], ["success"], ["entertaining"], ["ability"], ["discouraging"], ["positive"], ["regular"], ["dedicated"]]
+                },
+                {
+                    id: 3,
+                    title: "Environmental awareness in schools",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "There has been a massive increase in environmental {0} (AWARE) among young people recently. Many schools have started clubs focused on protecting the planet. Students are taking practical action, such as setting up {1} (RECYCLE) bins in every classroom. They are also organizing campaigns to reduce the amount of plastic packaging used in the school cafeteria, which was previously a {2} (DISASTER) for the local environment. Teachers have noticed that students are highly {3} (MOTIVATE) when it comes to tackling climate change. They frequently debate the {4} (EFFECT) of government policies regarding renewable energy. Some schools have even installed solar panels, which has led to a significant {5} (REDUCE) in their electricity bills. These initiatives prove that teenagers are not just talking about the future; they are making {6} (MEANING) changes today. Their {7} (ENTHUSIAST) is truly inspiring for everyone.",
+                    answers: [["awareness"], ["recycling"], ["disaster"], ["motivated"], ["effectiveness"], ["reduction"], ["meaningful"], ["enthusiasm"]]
+                },
+                {
+                    id: 4,
+                    title: "The School Sports Day",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "Every year, our school holds a sports day. It is a highly {0} (COMPETE) event where students from different years participate in various {1} (ATHLETE) activities. Winning isn't everything, but getting a medal brings a great sense of {2} (ACHIEVE). Teachers act as referees to ensure complete {3} (FAIR). Some students train for months to improve their {4} (FIT), showing amazing {5} (DEDICATE). However, the main goal is to encourage teamwork and {6} (FRIEND) among peers. It usually ends with a huge celebration, leaving everyone feeling completely {7} (EXHAUST) but happy.",
+                    answers: [["competitive"], ["athletic"], ["achievement"], ["fairness"], ["fitness"], ["dedication"], ["friendship"], ["exhausted"]]
+                },
+                {
+                    id: 5,
+                    title: "A trip to the theatre",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "Last week, our drama class went to see a new play in London. The {0} (PERFORM) of the lead actor was absolutely brilliant. The stage {1} (DIRECT) had created a very dark and moody atmosphere. The plot was full of suspense and kept the audience in a state of {2} (EXCITE) until the very end. The costumes were also incredibly {3} (IMPRESS), adding to the realism of the historical setting. During the interval, we had a very {4} (INTEREST) discussion about the themes. Overall, it was a highly {5} (EDUCATE) and inspiring experience. Our teacher has asked us to write a {6} (REVIEW) of the play for our next assignment. I found it so good that I'm considering an {7} (ACT) career!",
+                    answers: [["performance"], ["director"], ["excitement"], ["impressive"], ["interesting"], ["educational"], ["review"], ["acting"]]
+                },
+                {
+                    id: 6,
+                    title: "The benefits of learning a language",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "Learning a foreign language can be incredibly {0} (BENEFIT) for teenagers. Not only does it improve your memory, but it also increases your cultural {1} (AWARE). When travelling abroad, being able to speak the local language makes {2} (COMMUNICATE) much easier. It shows respect and can lead to very {3} (MEANING) conversations with locals. Many multinational companies look for {4} (EMPLOY) who are bilingual, so it greatly improves your future job prospects. Although the grammar can be quite {5} (CHALLENGE) at first, with regular practice, you will make steady {6} (PROGRESS). Don't worry about making mistakes; making errors is a {7} (NATURE) part of the learning process.",
+                    answers: [["beneficial"], ["awareness"], ["communication"], ["meaningful"], ["employees"], ["challenging"], ["progress"], ["natural"]]
+                },
+                {
+                    id: 7,
+                    title: "A successful school garden",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "Last spring, our science teacher suggested starting a school garden. Initially, many students showed little {0} (ENTHUSIAST). However, as soon as the first seeds began to sprout, their {1} (BEHAVE) completely changed. They became highly {2} (PROTECT) of the plants they had grown. Working in the dirt proved to be surprisingly {3} (RELAX) after a long day of classes. We grew a wide {4} (VARY) of vegetables, including tomatoes and carrots. The harvest was incredibly {5} (SUCCESS), and we even sold some produce to the local community. The project taught us a lot about {6} (ENVIRONMENT) sustainability and the importance of taking {7} (RESPONSIBLE) for our planet.",
+                    answers: [["enthusiasm"], ["behaviour", "behavior"], ["protective"], ["relaxing"], ["variety"], ["successful"], ["environmental"], ["responsibility"]]
+                },
+                {
+                    id: 8,
+                    title: "Mountain Biking",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "Mountain biking is an extremely popular outdoor activity, but it can also be quite {0} (DANGER) if you are not careful. Before heading out, you must always check that your {1} (EQUIP) is in good working order. Wearing a helmet is an absolute {2} (NECESSARY). It is also important to choose a trail that matches your {3} (ABLE) level. Beginners should avoid very steep or rocky paths to prevent {4} (INJURE). While riding, you need to maintain total {5} (CONCENTRATE) on the path ahead. The fast speeds can be thrilling, but a momentary {6} (DISTRACT) can lead to a bad crash. Despite the risks, the feeling of freedom it gives you is completely {7} (REPLACE).",
+                    answers: [["dangerous"], ["equipment"], ["necessity"], ["ability"], ["injury", "injuries"], ["concentration"], ["distraction"], ["irreplaceable"]]
+                },
+                {
+                    id: 9,
+                    title: "Making music digitally",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "Nowadays, producing your own music is highly {0} (ACCESS) to almost anyone with a computer. You no longer need to hire an expensive {1} (STUDY) to record a song. There are many affordable software programs that offer incredible {2} (FLEXIBLE) for young musicians. You can use virtual instruments to create any sound {3} (IMAGINE). Some teenagers have achieved incredible {4} (POPULAR) by sharing their home-made tracks on the internet. However, becoming a famous {5} (MUSIC) still requires a lot of talent and dedication. It is easy to get lost in all the technical details and forget about the emotional {6} (EXPRESS) of the song. Ultimately, technical skills are useless without true {7} (ORIGINAL).",
+                    answers: [["accessible"], ["studio"], ["flexibility"], ["imaginable"], ["popularity"], ["musician"], ["expression"], ["originality"]]
+                },
+                {
+                    id: 10,
+                    title: "Exploring the deep ocean",
+                    instructions: "For questions 1-8, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line.",
+                    content: "The deepest parts of the ocean remain one of the most {0} (MYSTERY) places on Earth. For centuries, human {1} (EXPLORE) of the seabed was impossible due to the extreme pressure. However, recent {2} (TECHNOLOGY) advances have allowed scientists to send remote-controlled submarines into the abyss. They have made some truly {3} (FASCINATE) discoveries, including strange creatures that glow in the dark. Finding life in such a harsh environment has completely changed our {4} (UNDERSTAND) of biology. Unfortunately, even these remote areas are suffering from the effects of {5} (GLOBE) warming and plastic pollution. It is a {6} (TRAGEDY) reality that we might destroy these ecosystems before we have fully studied them. We urgently need to establish better {7} (PROTECT) for our oceans.",
+                    answers: [["mysterious"], ["exploration"], ["technological"], ["fascinating"], ["understanding"], ["global"], ["tragic"], ["protection"]]
+                }
+            ],
+            part4: [
+                {
+                    id: 1,
+                    title: "Key Word Transformations - Test 1",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "I am certain that Peter didn't break the window.", keyWord: "HAVE", leadOutStart: "Peter", leadOutEnd: "the window.", answers: [["can't have broken", "cannot have broken", "couldn't have broken"]] },
+                        { leadIn: "They are going to build a new cinema in our town.", keyWord: "BUILT", leadOutStart: "A new cinema", leadOutEnd: "in our town.", answers: [["is going to be built"]] },
+                        { leadIn: "She started learning French two years ago.", keyWord: "BEEN", leadOutStart: "She", leadOutEnd: "two years.", answers: [["has been learning French for"]] },
+                        { leadIn: "'Why don't we go to the beach?' said Maria.", keyWord: "SUGGESTED", leadOutStart: "Maria", leadOutEnd: "to the beach.", answers: [["suggested going", "suggested that we go"]] },
+                        { leadIn: "The exam was so difficult that I couldn't finish it.", keyWord: "TOO", leadOutStart: "The exam was", leadOutEnd: "finish.", answers: [["too difficult for me to"]] },
+                        { leadIn: "I regret not studying harder for the test.", keyWord: "WISH", leadOutStart: "I", leadOutEnd: "harder for the test.", answers: [["wish I had studied"]] }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Key Word Transformations - Test 2",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "It's a pity I don't know how to play the piano.", keyWord: "COULD", leadOutStart: "I", leadOutEnd: "the piano.", answers: [["wish I could play"]] },
+                        { leadIn: "They cancelled the match because of the heavy rain.", keyWord: "CALLED", leadOutStart: "The match", leadOutEnd: "because of the heavy rain.", answers: [["was called off"]] },
+                        { leadIn: "I advise you to talk to your teacher about the problem.", keyWord: "BETTER", leadOutStart: "You", leadOutEnd: "to your teacher about the problem.", answers: [["had better talk", "'d better talk"]] },
+                        { leadIn: "My brother is taller than me.", keyWord: "AS", leadOutStart: "I am", leadOutEnd: "my brother.", answers: [["not as tall as"]] },
+                        { leadIn: "He didn't hurry, so he missed the train.", keyWord: "WOULD", leadOutStart: "If he had hurried, he", leadOutEnd: "the train.", answers: [["would not have missed", "wouldn't have missed"]] },
+                        { leadIn: "Do you mind if I open the window?", keyWord: "OBJECT", leadOutStart: "Do you", leadOutEnd: "the window?", answers: [["object to my opening", "object to me opening"]] }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Key Word Transformations - Test 3",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "'I will help you with your homework,' David said to me.", keyWord: "PROMISED", leadOutStart: "David", leadOutEnd: "with my homework.", answers: [["promised to help me"]] },
+                        { leadIn: "There is no milk left in the fridge.", keyWord: "RUN", leadOutStart: "We", leadOutEnd: "milk.", answers: [["have run out of"]] },
+                        { leadIn: "It wasn't necessary for you to bring a gift.", keyWord: "HAVE", leadOutStart: "You", leadOutEnd: "a gift.", answers: [["needn't have brought", "did not have to bring", "didn't have to bring"]] },
+                        { leadIn: "The movie was so boring that I fell asleep.", keyWord: "SUCH", leadOutStart: "It was", leadOutEnd: "that I fell asleep.", answers: [["such a boring movie"]] },
+                        { leadIn: "Someone is fixing my computer at the moment.", keyWord: "HAVING", leadOutStart: "I", leadOutEnd: "at the moment.", answers: [["am having my computer fixed", "'m having my computer fixed"]] },
+                        { leadIn: "I'm sure she was at home because her car was in the driveway.", keyWord: "MUST", leadOutStart: "She", leadOutEnd: "at home because her car was in the driveway.", answers: [["must have been"]] }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Key Word Transformations - Test 4",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "It's too cold to go swimming today.", keyWord: "WARM", leadOutStart: "It isn't", leadOutEnd: "to go swimming today.", answers: [["warm enough", "warm enough for us"]] },
+                        { leadIn: "I haven't seen my grandparents for two months.", keyWord: "TIME", leadOutStart: "The", leadOutEnd: "my grandparents was two months ago.", answers: [["last time I saw"]] },
+                        { leadIn: "You should read this book; it's very good.", keyWord: "WORTH", leadOutStart: "This book", leadOutEnd: "; it's very good.", answers: [["is worth reading", "is well worth reading"]] },
+                        { leadIn: "'Did you go to the party?' asked Tom.", keyWord: "IF", leadOutStart: "Tom asked me", leadOutEnd: "to the party.", answers: [["if I had gone", "if I went"]] },
+                        { leadIn: "The teacher made us stay after school.", keyWord: "MADE", leadOutStart: "We", leadOutEnd: "after school by the teacher.", answers: [["were made to stay"]] },
+                        { leadIn: "I'm sure he didn't forget your birthday.", keyWord: "FORGOTTEN", leadOutStart: "He", leadOutEnd: "your birthday.", answers: [["can't have forgotten", "cannot have forgotten", "couldn't have forgotten"]] }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Key Word Transformations - Test 5",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "I can't wait to go on holiday.", keyWord: "FORWARD", leadOutStart: "I'm really", leadOutEnd: "on holiday.", answers: [["looking forward to going"]] },
+                        { leadIn: "The car was too expensive for him to buy.", keyWord: "ENOUGH", leadOutStart: "He didn't", leadOutEnd: "to buy the car.", answers: [["have enough money"]] },
+                        { leadIn: "Someone stole my bike last night.", keyWord: "HAD", leadOutStart: "I", leadOutEnd: "last night.", answers: [["had my bike stolen"]] },
+                        { leadIn: "It's not a good idea to drink too much coffee.", keyWord: "AVOID", leadOutStart: "You", leadOutEnd: "too much coffee.", answers: [["should avoid drinking", "ought to avoid drinking"]] },
+                        { leadIn: "Although it was raining, we went for a walk.", keyWord: "SPITE", leadOutStart: "We went for a walk", leadOutEnd: "the rain.", answers: [["in spite of"]] },
+                        { leadIn: "I prefer playing football to watching it.", keyWord: "RATHER", leadOutStart: "I", leadOutEnd: "watch it.", answers: [["would rather play football than", "'d rather play football than"]] }
+                    ]
+                },
+                {
+                    id: 6,
+                    title: "Key Word Transformations - Test 6",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "It's possible that she missed the bus.", keyWord: "MIGHT", leadOutStart: "She", leadOutEnd: "the bus.", answers: [["might have missed"]] },
+                        { leadIn: "The film wasn't as good as I expected.", keyWord: "DISAPPOINTED", leadOutStart: "I", leadOutEnd: "the film.", answers: [["was disappointed with", "was disappointed by"]] },
+                        { leadIn: "They are repairing my car today.", keyWord: "REPAIRED", leadOutStart: "I am", leadOutEnd: "today.", answers: [["having my car repaired", "getting my car repaired"]] },
+                        { leadIn: "He started playing tennis five years ago.", keyWord: "PLAYING", leadOutStart: "He", leadOutEnd: "five years.", answers: [["has been playing tennis for"]] },
+                        { leadIn: "'Don't touch the wet paint!' the painter said to us.", keyWord: "WARNED", leadOutStart: "The painter", leadOutEnd: "the wet paint.", answers: [["warned us not to touch"]] },
+                        { leadIn: "I don't think it's a good idea to go out tonight.", keyWord: "WERE", leadOutStart: "If", leadOutEnd: "go out tonight.", answers: [["I were you I wouldn't", "I were you I'd not"]] }
+                    ]
+                },
+                {
+                    id: 7,
+                    title: "Key Word Transformations - Test 7",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "The concert was so crowded that we couldn't see the band.", keyWord: "TOO", leadOutStart: "There were", leadOutEnd: "us to see the band.", answers: [["too many people for"]] },
+                        { leadIn: "I regret saying that to her.", keyWord: "WISH", leadOutStart: "I", leadOutEnd: "that to her.", answers: [["wish I hadn't said", "wish I had not said"]] },
+                        { leadIn: "He was too tired to finish his homework.", keyWord: "THAT", leadOutStart: "He was", leadOutEnd: "finish his homework.", answers: [["so tired that he couldn't", "so tired that he could not"]] },
+                        { leadIn: "She is the best tennis player in the school.", keyWord: "AS", leadOutStart: "No one in the school", leadOutEnd: "she is.", answers: [["is as good at tennis as", "plays tennis as well as"]] },
+                        { leadIn: "I advise you to see a doctor.", keyWord: "OUGHT", leadOutStart: "You", leadOutEnd: "a doctor.", answers: [["ought to see"]] },
+                        { leadIn: "They have postponed the meeting until next week.", keyWord: "PUT", leadOutStart: "The meeting", leadOutEnd: "until next week.", answers: [["has been put off", "was put off"]] }
+                    ]
+                },
+                {
+                    id: 8,
+                    title: "Key Word Transformations - Test 8",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "I'm sure they have arrived by now.", keyWord: "MUST", leadOutStart: "They", leadOutEnd: "by now.", answers: [["must have arrived"]] },
+                        { leadIn: "She finds it difficult to get up early.", keyWord: "USED", leadOutStart: "She", leadOutEnd: "up early.", answers: [["is not used to getting", "isn't used to getting"]] },
+                        { leadIn: "My brother taught me how to swim.", keyWord: "BY", leadOutStart: "I", leadOutEnd: "my brother.", answers: [["was taught how to swim by", "was taught to swim by"]] },
+                        { leadIn: "Can you look after my dog while I'm away?", keyWord: "CARE", leadOutStart: "Can you", leadOutEnd: "my dog while I'm away?", answers: [["take care of"]] },
+                        { leadIn: "'Why are you late?' the teacher asked me.", keyWord: "WAS", leadOutStart: "The teacher asked me", leadOutEnd: "late.", answers: [["why I was"]] },
+                        { leadIn: "I haven't been to the cinema for a long time.", keyWord: "SINCE", leadOutStart: "It's", leadOutEnd: "to the cinema.", answers: [["a long time since I went", "been a long time since I went"]] }
+                    ]
+                },
+                {
+                    id: 9,
+                    title: "Key Word Transformations - Test 9",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "I'm sorry I didn't call you yesterday.", keyWord: "APOLOGISE", leadOutStart: "I", leadOutEnd: "you yesterday.", answers: [["apologise for not calling", "apologize for not calling"]] },
+                        { leadIn: "He is too young to drive a car.", keyWord: "OLD", leadOutStart: "He", leadOutEnd: "to drive a car.", answers: [["is not old enough", "isn't old enough"]] },
+                        { leadIn: "The weather is so bad that we can't go sailing.", keyWord: "SUCH", leadOutStart: "It is", leadOutEnd: "that we can't go sailing.", answers: [["such bad weather"]] },
+                        { leadIn: "I didn't mean to break the glass.", keyWord: "PURPOSE", leadOutStart: "I didn't break the", leadOutEnd: ".", answers: [["glass on purpose"]] },
+                        { leadIn: "She succeeded in passing her driving test.", keyWord: "MANAGED", leadOutStart: "She", leadOutEnd: "her driving test.", answers: [["managed to pass"]] },
+                        { leadIn: "They will probably win the match.", keyWord: "LIKELY", leadOutStart: "They", leadOutEnd: "the match.", answers: [["are likely to win"]] }
+                    ]
+                },
+                {
+                    id: 10,
+                    title: "Key Word Transformations - Test 10",
+                    instructions: "For questions 1-6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words.",
+                    questions: [
+                        { leadIn: "I have never seen such a beautiful painting.", keyWord: "THE", leadOutStart: "This is", leadOutEnd: "I have ever seen.", answers: [["the most beautiful painting"]] },
+                        { leadIn: "You mustn't park your car here.", keyWord: "ALLOWED", leadOutStart: "You", leadOutEnd: "your car here.", answers: [["are not allowed to park", "aren't allowed to park"]] },
+                        { leadIn: "I think you should go to bed now.", keyWord: "HIGH", leadOutStart: "It's", leadOutEnd: "to bed.", answers: [["high time you went"]] },
+                        { leadIn: "She let me use her computer.", keyWord: "ALLOWED", leadOutStart: "I", leadOutEnd: "use her computer.", answers: [["was allowed to"]] },
+                        { leadIn: "I don't really want to go out tonight.", keyWord: "FEEL", leadOutStart: "I don't", leadOutEnd: "out tonight.", answers: [["feel like going"]] },
+                        { leadIn: "I couldn't understand what he was saying.", keyWord: "SENSE", leadOutStart: "I couldn't", leadOutEnd: "what he was saying.", answers: [["make sense of"]] }
+                    ]
+                }
+            ],
+            part5: [
+                {
+                    id: 1,
+                    title: "My year as an exchange student",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "When I first told my parents I wanted to spend a year studying in Japan, they thought I was joking. I was only fifteen, and I hadn't even travelled outside of Europe before. But I had been obsessed with Japanese culture since I was a child, watching anime and reading manga. After months of begging, they finally agreed, provided I kept my grades up and helped pay for the flights. \n\nArriving in Tokyo was a massive shock to the system. The sheer volume of people, the neon lights, and the noise were overwhelming. My host family was incredibly welcoming, but the language barrier was a real issue initially. I had taken classes for a year, but textbook Japanese is very different from how teenagers actually speak. I spent the first few weeks feeling quite isolated at school, smiling and nodding when I had no idea what was being said.\n\nThe turning point came when I joined the school's kendo (swordsmanship) club. I was terrible at it, constantly tripping over my own feet. But the other members appreciated my effort and found my clumsiness amusing rather than annoying. Through sweat and shared exhaustion, we bonded. They started teaching me slang, and my confidence grew. By the end of the year, Tokyo felt like a second home, and leaving my host family was one of the hardest things I've ever had to do.",
+                    questions: [
+                        { q: "How did the writer's parents initially react to the idea of studying abroad?", options: ["They encouraged it.", "They didn't take it seriously.", "They refused immediately.", "They offered to pay for it all."], ans: 1 },
+                        { q: "What was the writer's condition for being allowed to go?", options: ["To learn the language perfectly.", "To travel within Europe first.", "To maintain good school marks and contribute financially.", "To stop watching anime."], ans: 2 },
+                        { q: "How did the writer feel upon arriving in Tokyo?", options: ["Excited and energized.", "Bored by the city.", "Overwhelmed by the environment.", "Disappointed by the host family."], ans: 2 },
+                        { q: "What problem did the writer face at school initially?", options: ["The teachers were too strict.", "The classes were too difficult.", "Real-life spoken language was hard to understand.", "Nobody wanted to talk to her."], ans: 2 },
+                        { q: "Why did joining the kendo club help the writer?", options: ["She became a champion fighter.", "It helped her overcome the language barrier through shared effort.", "The club members spoke English.", "It was a requirement for graduation."], ans: 1 },
+                        { q: "What is the writer's overall attitude towards her exchange year at the end?", options: ["She regrets going.", "She feels deeply attached to her life in Japan.", "She is glad to return to Europe.", "She thinks kendo was a waste of time."], ans: 1 }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Starting a school podcast",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "Last term, my friend Leo and I decided that our school needed a voice. The school magazine was fine, but let's be honest, nobody really read it apart from the teachers. We wanted something modern, something students could listen to on the bus. So, we pitched the idea of a school podcast to our headteacher, Mrs. Higgins. To our surprise, she not only agreed but gave us a small budget to buy a decent microphone.\n\nThe first episode was a disaster. We hadn't prepared a script, assuming we could just improvise and be funny. We ended up talking over each other, and there were agonizingly long periods of silence. When we listened back to it, we cringed. We realised that sounding natural actually requires a lot of planning. For the second episode, we mapped out segments, wrote bullet points, and invited the captain of the debate team as a guest.\n\nThe improvement was immense. Our peers started tuning in, and suddenly, people were coming up to us in the corridors suggesting topics. We talked about exam stress, cafeteria food, and even interviewed the caretaker, who turned out to have the most fascinating stories about the school's history. Running the podcast has taught me more about communication and meeting deadlines than any classroom project ever did.",
+                    questions: [
+                        { q: "Why did the writer and Leo want to start a podcast?", options: ["Because they disliked the teachers who wrote the magazine.", "Because they wanted to make money from it.", "Because they felt the school magazine was outdated and ignored.", "Because Mrs. Higgins asked them to do it."], ans: 2 },
+                        { q: "What was Mrs. Higgins's reaction to their idea?", options: ["She was completely opposed to it.", "She agreed but offered no support.", "She agreed and provided some financial help.", "She wanted to be the main host of the podcast."], ans: 2 },
+                        { q: "What caused the first episode to go badly?", options: ["The microphone was broken.", "They didn't plan what they were going to say.", "They were too nervous to speak.", "The guest didn't show up."], ans: 1 },
+                        { q: "What change did they make for the second episode?", options: ["They recorded it on the bus.", "They stopped trying to be funny.", "They structured it with notes and a guest.", "They asked teachers to write a script."], ans: 2 },
+                        { q: "What was the students' reaction to the improved podcast?", options: ["They ignored it.", "They actively engaged and offered ideas.", "They complained about the topics.", "They only liked the interview with the caretaker."], ans: 1 },
+                        { q: "What has the writer learned from this experience?", options: ["That improvising is the best way to be funny.", "That practical projects teach valuable life skills.", "That interviewing people is very difficult.", "That the school's history is boring."], ans: 1 }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "A disaster in the kitchen",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "My family loves watching cooking shows on television, so for my dad's fiftieth birthday, my brother and I decided to prepare a massive surprise dinner. We spent days secretly looking up recipes and buying ingredients. Our plan was incredibly ambitious: a three-course meal featuring a complex French soup, a perfectly roasted chicken, and a delicate chocolate soufflé for dessert.\n\nOn the afternoon of the party, we sent our parents out for a long walk. As soon as they left, we rushed into the kitchen. Things went wrong almost immediately. My brother dropped the eggs for the soufflé, meaning we had to quickly switch to a simple sponge cake. Then, while trying to blend the hot soup, I didn't hold the lid down properly. A wave of scalding orange liquid exploded across the kitchen, covering the walls, the ceiling, and my favourite t-shirt. I just stood there in shock, staring at the mess.\n\nWe spent the next two hours desperately scrubbing the walls instead of cooking. By the time our parents unlocked the front door, the kitchen was clean, but we only had a slightly burnt chicken and a hastily made salad to serve. Instead of being angry, my dad burst into laughter. He ordered some pizzas, and we spent the evening eating out of cardboard boxes. It wasn't the gourmet experience we had planned, but my dad said it was the most memorable birthday dinner he'd ever had.",
+                    questions: [
+                        { q: "Why did the writer and her brother decide to cook?", options: ["To practice for a cooking competition.", "Because their dad loves cooking shows.", "To celebrate a special family occasion.", "To apologize for a previous mistake."], ans: 2 },
+                        { q: "What was the main problem with their original plan?", options: ["They couldn't find the right ingredients.", "It was too complicated for their skill level.", "Their parents didn't like French food.", "They didn't have enough time to shop."], ans: 1 },
+                        { q: "Why did they have to change the dessert?", options: ["The oven broke down.", "They accidentally broke a key ingredient.", "They found a better recipe for a sponge cake.", "The chocolate tasted strange."], ans: 1 },
+                        { q: "What happened with the soup?", options: ["It caught fire on the stove.", "The blender broke and stopped working.", "The writer failed to secure the blender lid, causing a spill.", "The writer burned her hands and had to go to the hospital."], ans: 2 },
+                        { q: "What were they doing just before their parents arrived?", options: ["Cooking the chicken.", "Hiding the burnt cake.", "Cleaning up the massive spill.", "Ordering pizzas."], ans: 2 },
+                        { q: "How did the father react to the situation?", options: ["He was furious about the ruined kitchen.", "He was disappointed they didn't cook the soufflé.", "He found the whole situation highly amusing.", "He was angry they had to pay for pizza."], ans: 2 }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Joining the Debate Team",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "When I moved to a new high school, I was painfully shy. I hated speaking in front of people, and the thought of raising my hand in class made my heart race. So, when my English teacher suggested I join the debate team, I thought she was crazy. She argued that my written essays were incredibly persuasive and that I just needed a platform to vocalize my ideas. Reluctantly, I attended the first meeting, planning to just sit in the back and observe.\n\nThe debate club was chaotic but exciting. The students were passionately arguing about environmental policies, cutting each other off with counter-arguments. The team captain, a fierce girl named Maya, noticed me hiding in the corner. Instead of letting me watch, she handed me a card with a topic and told me I had five minutes to prepare a one-minute speech arguing in favour of school uniforms. I was terrified.\n\nWhen my turn came, my voice shook, and I looked mostly at my shoes. But as I read my points, I realized they were actually logical. To my surprise, Maya nodded approvingly when I finished. Over the next few months, the club became my safe space. We practiced structuring arguments and projecting our voices. By the end of the year, I was competing in regional tournaments. I still get nervous before a debate, but I've learned that fear doesn't have to stop you from speaking your mind.",
+                    questions: [
+                        { q: "How did the writer feel about participating in class at her new school?", options: ["She loved answering questions.", "She was overly confident.", "She felt extremely anxious about it.", "She found the classes too easy."], ans: 2 },
+                        { q: "Why did the English teacher recommend the debate team?", options: ["She thought it would help the writer make friends.", "She noticed the writer had strong argumentative skills in writing.", "The team desperately needed more members.", "She wanted the writer to stop being disruptive in class."], ans: 1 },
+                        { q: "What did the writer intend to do at the first meeting?", options: ["Give a speech about school uniforms.", "Argue with the team captain.", "Simply watch without participating.", "Resign from the club immediately."], ans: 2 },
+                        { q: "How did Maya, the team captain, treat the writer?", options: ["She ignored her completely.", "She forced her to participate straight away.", "She laughed at her shyness.", "She told her to prepare for a regional tournament."], ans: 1 },
+                        { q: "What was the writer's experience during her first speech?", options: ["She spoke clearly and confidently.", "She realized her arguments were surprisingly good.", "She forgot everything she had written down.", "The other students interrupted her constantly."], ans: 1 },
+                        { q: "What is the main theme of the text?", options: ["The negative impact of school uniforms.", "How to write a persuasive essay.", "Overcoming personal fears through a new challenge.", "The importance of winning regional competitions."], ans: 2 }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "A mountain biking adventure",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "My older cousin, Mark, is a mountain biking fanatic. He spends every weekend flying down treacherous, rocky trails. For months, he had been begging me to come along. I usually prefer quiet weekends reading or playing video games, but eventually, his persistent enthusiasm wore me down. I agreed to a 'beginner-friendly' ride in the nearby national park. Mark assured me it would be a gentle cycle through the forest.\n\nWithin ten minutes of arriving, I knew he had lied. The 'gentle' trail started with a steep, agonizing climb that left my lungs burning. Mark effortlessly pedalled ahead, occasionally shouting encouragement over his shoulder. When we finally reached the top, the view was spectacular, stretching out over miles of dense green trees. But my relief was short-lived. Mark grinned and pointed to a narrow, twisting path heading straight down the mountain. \"Now for the fun part,\" he said.\n\nThe descent was terrifying. The bike bounced violently over roots and loose rocks. I squeezed the brakes so hard my knuckles turned white, convinced I was going to crash into a tree at any moment. But halfway down, something shifted. I stopped fighting the bike and started to move with it, leaning into the corners and letting the suspension absorb the bumps. The sheer speed was exhilarating. By the time we reached the car park, I was covered in mud, exhausted, and sporting a scraped elbow. Mark looked at me apologetically, expecting me to shout at him. Instead, I asked him when we could go again.",
+                    questions: [
+                        { q: "Why did the writer agree to go mountain biking?", options: ["He wanted to improve his fitness.", "He was bored of his usual weekend activities.", "He couldn't handle his cousin's constant asking anymore.", "He wanted to buy a new mountain bike."], ans: 2 },
+                        { q: "How did the writer feel about the start of the trail?", options: ["It was exactly as gentle as Mark promised.", "It was physically exhausting and difficult.", "He found it easy to keep up with Mark.", "He was immediately terrified of crashing."], ans: 1 },
+                        { q: "What happened when they reached the top of the climb?", options: ["The writer decided to walk back down.", "Mark admitted he had chosen the wrong trail.", "The writer felt a brief moment of relief before the descent.", "They stopped to eat lunch and enjoy the view."], ans: 2 },
+                        { q: "What changed halfway through the descent?", options: ["The writer's brakes stopped working.", "The writer began to relax and enjoy the ride.", "Mark told the writer to slow down.", "The path became much wider and smoother."], ans: 1 },
+                        { q: "Why did Mark look apologetic at the end?", options: ["He thought the writer had hated the experience.", "He had lost his way in the forest.", "He had broken the writer's bike.", "He felt bad about the writer's scraped elbow."], ans: 0 },
+                        { q: "What is the writer's attitude towards mountain biking at the end?", options: ["He wants to do it again despite the challenges.", "He thinks it is too dangerous for beginners.", "He prefers his normal weekend hobbies.", "He is angry at Mark for lying to him."], ans: 0 }
+                    ]
+                },
+                {
+                    id: 6,
+                    title: "The Battle of the Bands",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "For months, our school had been buzzing with excitement about the upcoming 'Battle of the Bands' competition. My band, 'The Lunar Eclipses', had been practicing every day after school in my garage. Our lead singer, Chloe, had a voice that could shatter glass, and I felt fairly confident about my drumming skills. The only weak link was our bass player, Sam, who had a habit of forgetting his parts under pressure.\n\nOn the night of the competition, the school hall was packed. The atmosphere was electric, but the backstage area felt like a pressure cooker of nerves. Two bands performed before us, and they were astonishingly good. One group even brought their own light show. Seeing them, Sam began to hyperventilate. He looked pale and kept muttering that he wanted to go home. I had to physically block the door and remind him of the hundreds of hours we had spent rehearsing.\n\nWhen our name was called, we stumbled onto the stage. The lights were blinding. Chloe nodded at me, and I clicked my drumsticks together to start our original song. Surprisingly, the moment the music kicked in, Sam’s muscle memory took over. He didn't miss a single note. We didn't win the grand prize—that went to the band with the lights—but the sheer exhilaration of performing flawlessly in front of our peers made us feel like rock stars.",
+                    questions: [
+                        { q: "How did the writer feel about the band's chances before the competition?", options: ["They were guaranteed to win.", "They were mostly prepared but had one concern.", "They were completely unready.", "Chloe's singing was a major problem."], ans: 1 },
+                        { q: "What caused Sam to panic backstage?", options: ["He lost his bass guitar.", "He forgot the lyrics to the song.", "He was intimidated by the talent of the other bands.", "The backstage area was too hot."], ans: 2 },
+                        { q: "How did the writer react to Sam's panic?", options: ["He told Sam he could leave if he wanted to.", "He panicked as well.", "He forcefully prevented Sam from leaving and encouraged him.", "He asked the teachers to delay their performance."], ans: 2 },
+                        { q: "What happened when they started playing?", options: ["Sam forgot his part completely.", "The lights stopped working.", "Sam played his instrument perfectly without thinking.", "Chloe couldn't sing because she was nervous."], ans: 2 },
+                        { q: "Who won the competition?", options: ["The Lunar Eclipses.", "A band that had special visual effects.", "A band that played a cover song.", "The judges couldn't decide."], ans: 1 },
+                        { q: "What was the writer's final feeling about the event?", options: ["Bitter about not winning.", "Relieved that it was finally over.", "Thrilled by their successful performance.", "Disappointed in the judges' decision."], ans: 2 }
+                    ]
+                },
+                {
+                    id: 7,
+                    title: "Volunteering at the library",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "When my school announced a mandatory community service program, most students rushed to sign up for outdoor activities like park clean-ups or sports coaching. I, however, opted for the local public library. My friends thought I was crazy, assuming I’d spend my weekends dusting ancient encyclopedias in silence. I chose it simply because I wanted a quiet environment where I could occasionally read.\n\nMy supervisor, Mrs. Gable, quickly shattered my expectations of a peaceful retreat. On my first day, she handed me a brightly coloured t-shirt and informed me I would be assisting with the 'Toddler Story and Craft Hour'. I am not naturally good with small children, so I felt a wave of anxiety. For the first few weeks, I was mostly on crowd-control duty, trying to stop toddlers from eating the glue or drawing on the walls.\n\nGradually, though, I started to enjoy the chaos. I learned how to use different voices for the characters in the stories, which the kids found hilarious. One little boy, who initially refused to participate in any crafts, proudly handed me a slightly lopsided paper crown he had made specifically for me. By the end of the term, I realized that the library wasn't just a place to store books; it was a vibrant community hub. I decided to continue volunteering there even after my mandatory hours were completed.",
+                    questions: [
+                        { q: "Why did the writer's friends think his choice of volunteering was strange?", options: ["They thought it would be physically demanding.", "They assumed it would be extremely boring.", "They knew he didn't like reading.", "They wanted him to play sports with them."], ans: 1 },
+                        { q: "Why did the writer actually choose the library?", options: ["He wanted to help young children.", "He hoped it would be a quiet place to read.", "He wanted to learn how to organize books.", "Mrs. Gable personally asked him to help."], ans: 1 },
+                        { q: "What was the writer's initial reaction to his assigned task?", options: ["He was excited to wear the uniform.", "He was angry with Mrs. Gable.", "He felt very nervous about working with young kids.", "He thought it would be very easy."], ans: 2 },
+                        { q: "What was his main role during the first few weeks?", options: ["Reading stories aloud.", "Preventing the children from making a mess.", "Teaching the kids how to draw.", "Cleaning the library after the kids left."], ans: 1 },
+                        { q: "What indicated that the writer was becoming successful at his role?", options: ["He was promoted by Mrs. Gable.", "He read all the books in the children's section.", "A previously shy child made him a special craft.", "The toddlers stopped crying."], ans: 2 },
+                        { q: "How did the writer's view of the library change?", options: ["He realized it was too loud for him.", "He saw it as a lively centre for the community.", "He thought it needed more books.", "He decided he wanted to become a librarian."], ans: 1 }
+                    ]
+                },
+                {
+                    id: 8,
+                    title: "An unusual holiday in Iceland",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "Most of my classmates spent their summer holidays lounging on sunny beaches in Spain or Greece. My parents, however, are adventurous travelers. Last August, they booked a two-week trip to Iceland. I wasn't thrilled. Packing thermals and waterproof boots while my friends were buying sunglasses felt incredibly unfair. I imagined two weeks of freezing weather and looking at barren rocks.\n\nThe flight landed in Reykjavik under a grey, drizzly sky, confirming my worst fears. However, things changed drastically the next day when we joined a glacier hiking tour. Strapping metal spikes, called crampons, to my boots, we walked onto the massive ice cap. The ice wasn't just white; it glowed with vivid shades of blue. Our guide led us to a deep crevasse, and peering into the icy darkness was both terrifying and mesmerizing.\n\nThe highlight of the trip wasn't the ice, though, but the geothermal activity. One evening, we visited the Secret Lagoon. Bathing in naturally hot water while the cold air chilled my face was a bizarre but incredibly relaxing experience. We also saw geysers erupting violently from the ground, shooting boiling water high into the air. I returned home with hundreds of photos and a realization that dramatic, extreme landscapes could be just as beautiful, if not more so, than a tropical beach.",
+                    questions: [
+                        { q: "How did the writer feel about going to Iceland initially?", options: ["Excited to buy new winter clothes.", "Jealous of her friends' beach holidays.", "Curious about the geology of the island.", "Happy to go on an adventure with her parents."], ans: 1 },
+                        { q: "What was the writer's first impression upon arriving?", options: ["She was amazed by the scenery.", "She thought the weather matched her negative expectations.", "She was surprised by how warm it was.", "She immediately wanted to go hiking."], ans: 1 },
+                        { q: "What equipment was necessary for the glacier hike?", options: ["A special blue jacket.", "A waterproof camera.", "Metal spikes attached to their footwear.", "A rope to climb down the crevasse."], ans: 2 },
+                        { q: "How did the writer describe the color of the glacier?", options: ["Completely white.", "Covered in grey dust.", "Strikingly blue.", "Dark and terrifying."], ans: 2 },
+                        { q: "What did the writer find 'bizarre' at the Secret Lagoon?", options: ["The contrast between the hot water and the cold air.", "The smell of the water.", "The fact that geysers were erupting nearby.", "The amount of tourists there."], ans: 0 },
+                        { q: "What was the writer's final conclusion about the trip?", options: ["Iceland is too cold for a summer holiday.", "Extreme environments have their own unique beauty.", "She still prefers beach holidays.", "She wants to move to Iceland permanently."], ans: 1 }
+                    ]
+                },
+                {
+                    id: 9,
+                    title: "Creating a successful app",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "At just sixteen, Liam is already the CEO of a small software company. His journey began two years ago out of pure frustration. Like many teenagers, he struggled to balance his homework, sports practices, and social life. Existing calendar apps were either too complicated or lacked the specific features a high school student needs. So, armed with online tutorials and a lot of patience, he decided to build his own.\n\nHe spent his evenings writing code, often staying up late to fix frustrating bugs that caused the app to crash. His prototype, named 'StudySync', included a feature that automatically silenced social media notifications during scheduled study times. When he finally showed it to his friends, their reaction was overwhelming. They all wanted to download it. Recognizing the potential, Liam spent another three months refining the design and user interface before officially launching it on the app store.\n\nThe success was largely due to a viral video posted by a popular educational vlogger who praised StudySync’s simplicity. Within a week, the app had ten thousand downloads. Liam suddenly found himself dealing with user feedback, software updates, and even advertising offers. He admits that managing a business while studying for exams is incredibly stressful. However, he also notes that seeing thousands of students genuinely benefiting from something he created in his bedroom is the ultimate reward.",
+                    questions: [
+                        { q: "Why did Liam decide to create an app?", options: ["To make a lot of money.", "Because a teacher challenged him to do it.", "Because he couldn't find a suitable app for his own scheduling needs.", "To prove he was better than professional programmers."], ans: 2 },
+                        { q: "How did Liam learn to write the code for the app?", options: ["He took a university course.", "He hired a professional to teach him.", "He used free online instructional videos.", "He read textbooks from the library."], ans: 2 },
+                        { q: "What was the unique feature of 'StudySync'?", options: ["It did the students' homework for them.", "It blocked distracting notifications while studying.", "It tracked how much time users spent on social media.", "It helped students chat with their friends."], ans: 1 },
+                        { q: "What caused the app to suddenly become very popular?", options: ["Liam paid for a large advertising campaign.", "His school forced all students to use it.", "An influential internet personality recommended it.", "It won an award in an app store competition."], ans: 2 },
+                        { q: "How does Liam feel about running his business now?", options: ["He thinks it's much easier than going to school.", "He finds it stressful but ultimately very satisfying.", "He regrets launching the app publicly.", "He wants to sell the company to focus on exams."], ans: 1 },
+                        { q: "What is the main purpose of this text?", options: ["To teach teenagers how to code.", "To review a new calendar app.", "To warn about the dangers of overworking.", "To share an inspiring story of a teen entrepreneur."], ans: 3 }
+                    ]
+                },
+                {
+                    id: 10,
+                    title: "A survival skills weekend",
+                    instructions: "For questions 1-6, choose the answer (A, B, C or D) which you think fits best according to the text.",
+                    text: "I’ve always been a city kid. My idea of surviving in the wild involved finding a café with free Wi-Fi. However, my older brother persuaded me to join him on a 'wilderness survival' weekend. He promised it would build character. When we arrived at the dense, muddy forest camp, our instructor immediately confiscated our phones, watches, and any snacks we had hidden. We were handed a knife, some rope, and a flint for starting fires.\n\nThe first task was building a shelter before nightfall. We quickly realized that finding dry branches and leaves in a damp forest is incredibly difficult. My brother and I argued constantly over the best way to construct the roof, and our final result was little more than a pile of sticks that leaked when it rained later that night. We woke up cold, stiff, and miserable.\n\nHowever, the second day brought a sense of accomplishment. We finally managed to start a fire using the flint, striking the metal until our hands blistered. Cooking a simple stew over a fire we had made ourselves made the food taste like a feast. We also learned how to navigate using the position of the sun and moss on trees. While I was thrilled to return to my warm bed and modern plumbing, the weekend taught me that humans are far more capable of adapting to harsh conditions than we give ourselves credit for.",
+                    questions: [
+                        { q: "What was the writer's attitude towards nature before the trip?", options: ["He preferred urban environments and modern conveniences.", "He enjoyed camping but disliked hiking.", "He thought he was already an expert survivor.", "He was terrified of wild animals."], ans: 0 },
+                        { q: "What did the instructor do at the beginning of the camp?", options: ["He gave them a large meal.", "He took away their modern items and food.", "He taught them how to use a compass.", "He left them alone in the forest immediately."], ans: 1 },
+                        { q: "Why was building the shelter difficult?", options: ["They didn't have enough rope.", "The instructor gave them the wrong instructions.", "The materials in the forest were wet.", "They spent too much time arguing instead of working."], ans: 2 },
+                        { q: "How was the first night in the forest?", options: ["Surprisingly comfortable.", "Extremely uncomfortable and wet.", "Too warm because of the fire.", "Frightening because of animal noises."], ans: 1 },
+                        { q: "What caused the writer's mood to improve on the second day?", options: ["They were given their phones back.", "They successfully started a fire and cooked.", "The instructor helped them fix their shelter.", "The weather became very sunny and hot."], ans: 1 },
+                        { q: "What did the writer learn from the experience?", options: ["That he wants to live in the forest permanently.", "That modern technology is unnecessary.", "That people can survive and adapt better than they think.", "That his brother is a terrible leader."], ans: 2 }
+                    ]
+                }
+            ],
+            part6: [
+                {
+                    id: 1,
+                    title: "The Mystery of the Nazca Lines",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "In the desert of southern Peru lie the Nazca Lines, one of the world's greatest archaeological mysteries. These massive geoglyphs depict various animals, plants, and geometric shapes. {0} Some of the straight lines stretch for miles across the arid landscape. The lines were created by removing the reddish-brown iron oxide-coated pebbles that cover the surface of the Nazca Desert. {1} Due to the dry, windless, and stable climate of the plateau, the lines have been naturally preserved for over 2,000 years.\n\nBut why were they made? {2} Early theories suggested they were an astronomical calendar. Others proposed they acted as pathways for ceremonial processions. More recent research indicates a strong connection to water. {3} In a region where rain is extremely rare, water was a precious commodity, and rituals to summon it would have been crucial for survival.\n\nThe sheer scale of the designs has led some to wonder how they were created without aerial views. {4} They used simple tools and surveying equipment, like wooden stakes and ropes, to scale up small models into enormous ground drawings. \n\nToday, the Nazca Lines face modern threats. {5} Despite efforts to protect them, ensuring the long-term survival of this ancient wonder remains a constant challenge.",
+                    sentences: [
+                        "A. This exposes the light-coloured earth underneath, creating a sharp contrast.",
+                        "B. Heavy rain has washed away many of the smaller drawings.",
+                        "C. They are so large that they can only be fully appreciated from the air.",
+                        "D. This question has puzzled scholars since the lines were first discovered from the air in the 1930s.",
+                        "E. However, experiments have shown that creating them on the ground is entirely possible.",
+                        "F. Many archaeologists now believe the figures were meant to be seen by deities in the sky who controlled the weather.",
+                        "G. Illegal mining, off-road vehicles, and climate change all pose significant risks to their preservation."
+                    ],
+                    answers: [2, 0, 3, 5, 4, 6]
+                },
+                {
+                    id: 2,
+                    title: "The truth about smart homes",
+                    instructions: "You are going to read an article about smart home technology. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "A decade ago, the idea of a house that could think for itself seemed like pure science fiction. Today, 'smart homes' are becoming increasingly common. With a simple voice command or a tap on a smartphone, you can control the lighting, heating, and security of your property. {0} This level of convenience is undoubtedly appealing to many busy homeowners.\n\nHowever, installing smart technology isn't just about saving effort. {1} Smart thermostats, for instance, learn your daily routine and adjust the temperature accordingly. They turn the heating down when you leave the house and warm it up just before you return, ensuring no energy is wasted. \n\nDespite these benefits, there are valid concerns regarding privacy and security. {2} If a hacker manages to breach a smart home's network, they could potentially unlock doors or access live security camera feeds. Furthermore, many of these devices constantly listen for voice commands. {3} Companies assure users that their data is encrypted, but data breaches still occasionally make the headlines.\n\nAnother issue is the lack of compatibility between different brands. {4} It can be frustrating when your new smart lightbulbs refuse to connect to your existing central hub. {5} Until a universal standard is adopted, consumers need to carefully research products before buying them.",
+                    sentences: [
+                        "A. This raises questions about how much personal information is being recorded and stored by tech corporations.",
+                        "B. Buying all your devices from the same manufacturer is currently the only guaranteed way to avoid this.",
+                        "C. For example, you can preheat your oven while you are still commuting home from work.",
+                        "D. It can also significantly reduce your monthly electricity and gas bills.",
+                        "E. Smart homes are far too expensive for the average person to afford.",
+                        "F. Every device connected to the internet is essentially a potential entry point for cybercriminals.",
+                        "G. You might buy a smart speaker from one company, only to find it cannot communicate with your smart TV from another."
+                    ],
+                    answers: [2, 3, 5, 0, 6, 1]
+                },
+                {
+                    id: 3,
+                    title: "The History of Graffiti",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "Graffiti is often seen as a modern phenomenon, primarily associated with the hip-hop culture of New York in the 1970s. However, the urge to leave a mark on a wall is incredibly ancient. {0} In the ruins of Pompeii, archaeologists have found political slogans, insults, and even romantic declarations carved into the stone. \n\nThe modern graffiti movement, however, began with a simple act of tagging. Teenagers would write their nicknames on subway trains to gain recognition among their peers. {1} The authorities, naturally, viewed this as vandalism and spent millions trying to clean the trains.\n\nOver time, graffiti evolved from simple signatures to complex, colourful murals known as 'masterpieces'. {2} They had to work quickly under the cover of darkness to avoid being caught by the police. \n\nToday, the line between vandalism and art is heavily debated. {3} Cities now commission artists to paint large murals to brighten up neglected areas. Famous street artists like Banksy have even had their work sold for millions in art galleries. {4} Despite this acceptance, illegal tagging still continues, meaning the controversy surrounding graffiti is unlikely to end anytime soon. {5}",
+                    sentences: [
+                        "A. As the competition grew, artists began using spray paint to make their tags larger and more visible.",
+                        "B. In fact, some of the earliest examples date back to the Roman Empire.",
+                        "C. Many people strongly believe that any writing on a wall without permission is a crime.",
+                        "D. Creating these massive pieces required significant planning and artistic skill.",
+                        "E. These artists often use their work to make powerful political or social statements.",
+                        "F. Some ancient cave paintings were also created using similar techniques.",
+                        "G. Many local councils have recognized the cultural value of high-quality street art."
+                    ],
+                    answers: [1, 0, 3, 6, 4, 2]
+                },
+                {
+                    id: 4,
+                    title: "A teen astronaut training camp",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "Every year, hundreds of teenagers travel to a specialized facility in Alabama for Space Camp. It is not an ordinary summer camp with swimming and campfire songs. {0} The program is designed to be as close to real astronaut training as possible.\n\nThe trainees' days are packed with intense activities. They learn about the physics of rocket launches and the complex engineering of spacecraft. {1} In this simulator, students experience the feeling of working in a low-gravity environment, just like walking on the moon.\n\nThe highlight of the week is the simulated space mission. {2} Every student is assigned a specific role, ranging from flight commander in the spacecraft to systems engineer at Mission Control. {3} If a 'malfunction' occurs, such as a simulated oxygen leak, the team must communicate clearly to solve it before time runs out.\n\nWhile few of the attendees will actually make it to space, the skills they learn are invaluable. {4} Many graduates go on to pursue successful careers in engineering, aviation, and software development. {5} The camp ultimately proves that science and teamwork can be incredibly exciting.",
+                    sentences: [
+                        "A. They learn how to stay calm under pressure and work effectively in a team.",
+                        "B. One of the most popular attractions is the multi-axis trainer, which spins students in all directions.",
+                        "C. Instead, participants spend their time preparing for a journey beyond Earth's atmosphere.",
+                        "D. During this two-hour event, they must execute a launch, orbit, and safe landing.",
+                        "E. Some students even get motion sickness during this particular exercise.",
+                        "F. They also discover a lifelong passion for exploring the unknown.",
+                        "G. The instructors frequently introduce unexpected problems to test the students' reactions."
+                    ],
+                    answers: [2, 1, 3, 6, 0, 5]
+                },
+                {
+                    id: 5,
+                    title: "The benefits of learning sign language",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "When most teenagers choose a second language to study at school, they usually opt for Spanish, French, or German. However, a growing number of students are discovering the unique benefits of learning sign language. {0} It is a fully developed language with its own grammar, syntax, and cultural history.\n\nLearning to sign has obvious practical advantages. {1} Being able to communicate directly can make a huge difference in breaking down barriers and fostering inclusion. Furthermore, it can be a highly useful skill in careers such as healthcare, education, and customer service.\n\nInterestingly, research suggests that learning sign language can also boost brain development. {2} This visual-spatial learning enhances overall cognitive function and improves memory. People who sign often show better peripheral vision and reaction times.\n\nMany students also find that signing is simply fun to learn. {3} You have to use facial expressions and body language to convey emotion and tone. {4} Because of this, classrooms where sign language is taught are often very energetic and expressive. {5} It offers a completely different, engaging way to connect with others.",
+                    sentences: [
+                        "A. This is because it requires the brain to process information in a completely different way.",
+                        "B. It allows you to converse with members of the Deaf community who use it as their primary language.",
+                        "C. Some people mistakenly believe that sign language is universal across the world.",
+                        "D. Unlike spoken languages, it is highly active and physical.",
+                        "E. First of all, sign language is not just a collection of simple hand gestures.",
+                        "F. For these reasons, more schools should consider adding it to their curriculum.",
+                        "G. If you don't use these elements, the meaning of the signs can completely change."
+                    ],
+                    answers: [4, 1, 0, 3, 6, 5]
+                },
+                {
+                    id: 6,
+                    title: "The psychology of magic tricks",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "We all know that magic isn't real, yet we are still amazed when a magician makes a coin vanish or pulls a rabbit from a hat. The secret to a successful illusion doesn't lie in supernatural powers. {0} Magicians are masters at manipulating human attention and perception.\n\nOne of the most important techniques they use is called 'misdirection'. {1} A magician might make a large, dramatic gesture with their right hand to draw the audience's eyes. {2} Because our brains cannot focus on everything at once, we completely miss the crucial action.\n\nMagicians also exploit our brain's tendency to make assumptions. {3} For example, if a magician throws a ball in the air twice, we expect them to throw it a third time. They might only pretend to throw it, but our brains 'see' the ball going up anyway. \n\nEven when we know we are being tricked, we still enjoy the experience. {4} This temporary suspension of disbelief allows us to feel a sense of wonder. {5} By studying magicians, scientists are learning a great deal about the limitations and quirks of the human mind.",
+                    sentences: [
+                        "A. When we see a pattern, we expect it to continue.",
+                        "B. Instead, it relies heavily on a deep understanding of psychology.",
+                        "C. This means forcing the audience to look exactly where the magician wants them to look.",
+                        "D. Meanwhile, their left hand is secretly performing the trick completely unnoticed.",
+                        "E. It is fascinating how easily our senses can be fooled.",
+                        "F. Some tricks require incredibly complex mechanical devices hidden on stage.",
+                        "G. Psychologists believe this is because we love the thrill of an unsolved puzzle."
+                    ],
+                    answers: [1, 2, 3, 0, 6, 4]
+                },
+                {
+                    id: 7,
+                    title: "Protecting coral reefs",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "Coral reefs are often called the 'rainforests of the sea' because they are home to a staggering variety of marine life. Even though they cover less than 1% of the ocean floor, they support roughly 25% of all marine species. {0} They provide food, shelter, and breeding grounds for millions of fish.\n\nUnfortunately, these vibrant ecosystems are facing unprecedented threats. The most significant danger comes from climate change. {1} When water temperatures rise even slightly, corals become stressed and expel the colourful algae living inside them. {2} If the water doesn't cool down quickly, the coral will eventually starve and die.\n\nHuman activities also directly damage the reefs. Pollution from coastal cities and agricultural runoff introduces harmful chemicals into the water. {3} Furthermore, irresponsible tourism, where divers touch or stand on the fragile coral structures, causes physical damage that can take decades to repair.\n\nHowever, there is still hope. Scientists are actively working on innovative conservation methods. {4} Once they are large enough, they are transplanted back onto damaged reefs to help them recover. {5} Ultimately, lowering global carbon emissions remains the most crucial step in saving them.",
+                    sentences: [
+                        "A. This blocks sunlight and prevents the corals from getting the nutrients they need.",
+                        "B. One promising technique involves growing resilient coral fragments in underwater nurseries.",
+                        "C. As the oceans absorb excess heat from the atmosphere, the water gets warmer.",
+                        "D. This process, known as 'coral bleaching', leaves the coral completely white and highly vulnerable.",
+                        "E. Some species of fish are completely reliant on specific types of coral for survival.",
+                        "F. Without these critical habitats, the entire ocean food chain would collapse.",
+                        "G. While these local efforts are important, they cannot solve the root cause of the problem."
+                    ],
+                    answers: [5, 2, 3, 0, 1, 6]
+                },
+                {
+                    id: 8,
+                    title: "The rise of electric scooters",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "Over the last few years, electric scooters have flooded the streets of major cities around the world. Users can easily unlock a scooter using a smartphone app, ride it to their destination, and leave it on the pavement for the next person. {0} They offer a quick, cheap, and environmentally friendly alternative to driving or taking the bus.\n\nHowever, this sudden explosion in popularity has also created numerous problems. Pedestrians frequently complain about scooters being abandoned carelessly. {1} This can be particularly dangerous for elderly people or those with visual impairments. \n\nSafety is another major concern. Many riders refuse to wear helmets and weave recklessly through traffic. {2} As a result, hospitals have reported a significant increase in injuries related to scooter accidents. \n\nTo address these issues, city councils have been forced to implement new regulations. {3} Others have gone further, requiring companies to ensure scooters are only parked in designated zones. {4} They argue that too many rules will discourage people from using this sustainable mode of transport. {5} Finding a balance between convenience and public safety will be the key to their long-term survival.",
+                    sentences: [
+                        "A. Some cities have introduced strict speed limits and banned them entirely from pavements.",
+                        "B. When left lying across paths, they create tripping hazards and block wheelchair access.",
+                        "C. The companies that operate the scooters claim they are losing money due to theft.",
+                        "D. Despite the controversy, it seems electric scooters are here to stay.",
+                        "E. This convenience has made them incredibly popular, especially for short journeys.",
+                        "F. Scooter operators worry that these heavy restrictions will destroy their business model.",
+                        "G. Furthermore, they often ride on pavements, endangering the people walking there."
+                    ],
+                    answers: [4, 1, 6, 0, 5, 3]
+                },
+                {
+                    id: 9,
+                    title: "Living in a tiny house",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "The 'tiny house movement' is gaining popularity as more people choose to drastically downsize their living spaces. A typical tiny house is rarely larger than a standard garage. {0} To achieve this, every single piece of furniture must serve multiple purposes.\n\nThe primary appeal of tiny living is financial. Traditional houses require large mortgages and are expensive to heat and maintain. {1} This allows owners to save money, travel more, or work fewer hours since their living costs are so low.\n\nHowever, this lifestyle is not without its significant challenges. The most obvious problem is the severe lack of space. {2} You have to be incredibly organized and constantly declutter, keeping only the items you truly need. \n\nAnother issue is finding a place to legally park the home. {3} This means that despite owning their house, many tiny house owners face a constant struggle to find land to rent. {4} Living in such close quarters with a partner or family member means there is absolutely no privacy. {5} It requires a major shift in mindset, prioritizing experiences over physical possessions.",
+                    sentences: [
+                        "A. In contrast, tiny houses can often be built or bought without taking on decades of debt.",
+                        "B. For those who can manage it, however, it offers a sense of profound freedom.",
+                        "C. Furthermore, relationships can be tested by the confined environment.",
+                        "D. Many local zoning laws prohibit living full-time in structures that have wheels or are very small.",
+                        "E. If you enjoy collecting clothes, books, or sports equipment, you will quickly run out of room.",
+                        "F. Despite the small footprint, they are designed to include a kitchen, bathroom, and sleeping area.",
+                        "G. They are highly energy-efficient and usually use solar panels for electricity."
+                    ],
+                    answers: [5, 0, 4, 3, 2, 1]
+                },
+                {
+                    id: 10,
+                    title: "How memory works",
+                    instructions: "You are going to read an article. Six sentences have been removed from the article. Choose from the sentences A-G the one which fits each gap (1-6). There is one extra sentence.",
+                    text: "Human memory is a complex and fascinating system, acting more like a dynamic network than a simple filing cabinet. The process begins with 'encoding', which happens when we first pay attention to a piece of information. {0} If you are distracted while reading a textbook, for instance, your brain won't encode the facts properly.\n\nOnce encoded, the information needs to be stored. Our brains have short-term and long-term storage areas. Short-term memory only holds a small amount of data for a brief period. {1} Through repetition and practice, data is transferred into our long-term memory, which has a seemingly infinite capacity.\n\nThe final stage is 'retrieval', which is the act of bringing the stored information back into your conscious mind. {2} Have you ever felt that a word is 'on the tip of your tongue' but you can't quite remember it? {3} Sometimes, recalling a specific smell or hearing a certain song can suddenly unlock a flood of associated memories.\n\nInterestingly, every time we retrieve a memory, we actually alter it slightly. {4} Therefore, a memory you have recalled many times might be quite different from the actual event that originally took place. {5} Understanding this flexibility can help us develop better study habits for exams.",
+                    sentences: [
+                        "A. This failure in retrieval is common and usually temporary.",
+                        "B. If we want to remember a phone number, we usually have to repeat it several times.",
+                        "C. Our brains weave new information or current emotions into the old memory before storing it again.",
+                        "D. This is why eye-witness testimonies in court cases can sometimes be unreliable.",
+                        "E. Without strong initial focus, the memory will never even be formed.",
+                        "F. Some people are born with 'photographic' memories and never forget anything.",
+                        "G. This process is not always perfect, as our brains can sometimes struggle to locate the correct file."
+                    ],
+                    answers: [4, 1, 6, 0, 2, 3]
+                }
+            ],
+            part7: [
+                {
+                    id: 1,
+                    title: "Teenagers and their part-time jobs",
+                    instructions: "You are going to read an article in which four teenagers talk about their part-time jobs. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager says their job has made them more confident?",
+                        "Which teenager mentions having to deal with difficult people?",
+                        "Which teenager works in a family business?",
+                        "Which teenager plans to pursue a career related to their current job?",
+                        "Which teenager mentions the physical demands of the job?",
+                        "Which teenager says the job helps them manage their time better?",
+                        "Which teenager works outdoors?",
+                        "Which teenager mentions the financial benefits of the job?",
+                        "Which teenager works irregular hours?",
+                        "Which teenager finds the job stressful at times?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Alex", content: "I work as a barista in a busy city centre café. It's incredibly fast-paced, especially during the morning rush hour. You have to remember complex orders and make coffee quickly. Sometimes customers can be quite rude if they have to wait, which can be tough. But overall, it's pushed me out of my shell and I can talk to anyone now. I love the extra cash, too." },
+                        { id: "B", name: "Bella", content: "My parents own a small bakery, so I've been helping out there since I was twelve. Now I officially work there on weekends. I have to wake up at 4 AM on Saturdays, which is exhausting, and standing on my feet all day really aches. But I love baking. In fact, I'm hoping to go to culinary school next year and open my own pastry shop eventually." },
+                        { id: "C", name: "Charlie", content: "I work as a dog walker. It's a great job because I get paid to be outside and get some exercise. My schedule varies a lot depending on when the owners need me, so I have to be very organized with my homework. It's definitely taught me how to prioritize my time. Some of the dogs are quite large and pull on the lead, so it requires some strength!" },
+                        { id: "D", name: "Daisy", content: "I tutor younger students in maths. I usually do it online in the evenings. It's very rewarding when you see a student finally understand a concept they've been struggling with. However, it can be quite high-pressure when their exams are coming up, as parents expect to see results. The money is good, and it looks great on my university application, but it does make my evenings quite full." }
+                    ],
+                    answers: [0, 0, 1, 1, 1, 2, 2, 0, 2, 3]
+                },
+                {
+                    id: 2,
+                    title: "Four teenagers talk about their favourite school subjects",
+                    instructions: "You are going to read an article in which four teenagers talk about the subjects they love. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager likes that their subject rarely has one definitive correct answer?",
+                        "Which teenager was inspired by a specific teacher?",
+                        "Which teenager enjoys the practical, hands-on aspect of their subject?",
+                        "Which teenager plans to study their subject at university?",
+                        "Which teenager likes how their subject helps them understand current world events?",
+                        "Which teenager initially disliked their favourite subject?",
+                        "Which teenager mentions the importance of teamwork in their subject?",
+                        "Which teenager finds their subject visually stimulating?",
+                        "Which teenager likes that their subject involves solving puzzles?",
+                        "Which teenager appreciates learning about different cultures?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Marcus - History", content: "I used to think History was just memorizing dates and names of dead kings. I hated it. But then Mr. Davis started teaching us. He brings it to life like a story. I love seeing how decisions made centuries ago still impact the political situations we see on the news today. It makes you realize that humanity keeps making the same mistakes. I'm definitely going to apply for a History degree next year." },
+                        { id: "B", name: "Elena - Art", content: "For me, Art is the only time in the school day where I can truly relax. I love getting my hands dirty with clay or mixing paints. There's no right or wrong in Art, unlike Maths or Science. It's all about how you interpret things. I'm a very visual person, so looking at masterpieces and trying to recreate those techniques is deeply satisfying. Sometimes we do group murals, and coordinating with others to make one giant piece is really fun." },
+                        { id: "C", name: "Liam - Computer Science", content: "Computer Science is my absolute favorite. Writing code is basically like solving a series of complex logic puzzles. When a program fails, you have to meticulously search for the bug, and the feeling you get when you finally fix it and the code runs perfectly is unbeatable. It's highly practical; I've already built a few simple apps for my smartphone. We often have to collaborate on larger programming projects, which is great preparation for the real world." },
+                        { id: "D", name: "Sarah - Foreign Languages", content: "I study French and Spanish, and I love them both. Learning a language isn't just about vocabulary; it opens up a whole new way of seeing the world. When we read literature or watch films from Spain or France, we learn so much about their traditions and mindsets. It's fascinating. I also love the analytical side of it, figuring out the grammar rules is like a mental workout. Plus, being able to converse with people from different backgrounds is an amazing skill." }
+                    ],
+                    answers: [1, 0, 1, 0, 0, 0, 2, 1, 2, 3]
+                },
+                {
+                    id: 3,
+                    title: "Four teenagers talk about their hobbies",
+                    instructions: "You are going to read an article in which four teenagers talk about their hobbies. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager says their hobby helps them relax after school?",
+                        "Which teenager has made new friends globally because of their hobby?",
+                        "Which teenager wants to turn their hobby into a career?",
+                        "Which teenager admits their hobby can be quite frustrating?",
+                        "Which teenager spends a lot of time analyzing other people's work?",
+                        "Which teenager prefers doing their hobby alone?",
+                        "Which teenager's hobby involves physical movement?",
+                        "Which teenager requires specific weather conditions for their hobby?",
+                        "Which teenager says their hobby requires a lot of patience?",
+                        "Which teenager learned their hobby from a family member?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Liam - Coding", content: "I build simple video games. It requires intense focus and immense patience. When the code fails, it is incredibly frustrating to find the tiny error causing it. However, I’ve joined several online forums, and I've made fantastic friends from all over the world who help me fix the bugs. I definitely want to study software engineering." },
+                        { id: "B", name: "Mia - Photography", content: "My grandfather gave me his old camera. I spend hours looking at famous photographs to understand their lighting and angles. I prefer going out alone early in the morning when the light is best; it’s my quiet time. I don't want to do it professionally, though, as I think the pressure would ruin the joy." },
+                        { id: "C", name: "Noah - Surfing", content: "Surfing is my ultimate escape. The moment I hit the water, all my school stress vanishes. It is physically exhausting, paddling against the waves, but nothing beats the thrill of standing up. Of course, it's totally dependent on the wind and the tide, so there are some weekends I just can't practice." },
+                        { id: "D", name: "Chloe - Chess", content: "My dad taught me the rules when I was seven. Chess is like a silent battle. You have to anticipate what your opponent will do three steps ahead. Some games can last for hours, requiring extreme patience. I play in local tournaments, but it's mostly just a fun intellectual challenge for me rather than a career path." }
+                    ],
+                    answers: [2, 0, 0, 0, 1, 1, 2, 2, 3, 3]
+                },
+                {
+                    id: 4,
+                    title: "Four teenagers talk about their favorite book genres",
+                    instructions: "You are going to read an article in which teenagers talk about reading. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager enjoys trying to figure out the ending before the characters do?",
+                        "Which teenager feels inspired by reading about real people?",
+                        "Which teenager likes books that explore potential future technologies?",
+                        "Which teenager says reading helps them understand past eras?",
+                        "Which teenager appreciates a fast-paced, unpredictable plot?",
+                        "Which teenager learns life lessons from the mistakes of historical figures?",
+                        "Which teenager likes books that make them question the current state of society?",
+                        "Which teenager enjoys reading about people who overcame great difficulties?",
+                        "Which teenager pays attention to the small clues hidden by the author?",
+                        "Which teenager finds factual books more entertaining than fiction?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Sam - Science Fiction", content: "I’m obsessed with sci-fi. I love imagining what the world might look like in a hundred years. The best sci-fi books aren't just about spaceships; they use futuristic settings to make us question the ethical choices we are making today regarding artificial intelligence and the environment." },
+                        { id: "B", name: "Jenna - Biographies", content: "I actually find fiction a bit boring compared to real life. Reading biographies of people who survived incredible hardships or achieved amazing things against the odds is so inspiring. You realize that true success usually involves a lot of failures along the way, which makes me feel better about my own mistakes." },
+                        { id: "C", name: "Toby - Mystery/Thrillers", content: "For me, reading is a game. I love thrillers where you are constantly trying to guess 'who did it'. I look for the subtle hints the author drops in the early chapters. A book is only good if it has a fast-paced plot with a twist at the end that I completely didn't see coming." },
+                        { id: "D", name: "Aisha - Historical Fiction", content: "Historical fiction transports you in a way a history textbook never can. It’s fascinating to see how people lived, thought, and survived during major events like wars or revolutions. By experiencing the emotions of characters in the past, I feel like I learn valuable lessons about human nature and resilience." }
+                    ],
+                    answers: [2, 1, 0, 3, 2, 3, 0, 1, 2, 1]
+                },
+                {
+                    id: 5,
+                    title: "Four teenagers talk about sports",
+                    instructions: "You are going to read an article in which teenagers talk about the sports they play. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager says their sport requires a lot of flexibility?",
+                        "Which teenager likes the tactical aspect of their sport?",
+                        "Which teenager's sport requires them to wake up very early?",
+                        "Which teenager mentions the risk of getting injured?",
+                        "Which teenager says their sport helps them feel calm and peaceful?",
+                        "Which teenager has to follow a strict diet for their sport?",
+                        "Which teenager values the respect taught in their sport?",
+                        "Which teenager enjoys the individual focus of their sport?",
+                        "Which teenager's sport involves performing routines to music?",
+                        "Which teenager finds the repetitive nature of their sport meditative?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Ben - Swimming", content: "I am in the pool by 5 AM every morning. Doing lap after lap might sound boring to some, but I find the repetition incredibly peaceful and almost meditative. It's just me and the water; there are no teammates to rely on or blame. It clears my head completely before the school day begins." },
+                        { id: "B", name: "Zara - Gymnastics", content: "Gymnastics demands absolute perfection. We combine intense strength with extreme flexibility, often performing our floor routines to upbeat music. The pressure during competitions is immense, and you are always aware that one bad landing could result in a serious injury. That’s why we practice the same moves thousands of times." },
+                        { id: "C", name: "David - Martial Arts", content: "I do Judo. People think it's just about fighting, but it's actually highly tactical. You have to use your opponent's momentum against them. The most important thing we learn in the dojo is discipline and profound respect for our instructors and opponents. It’s totally changed how I handle conflicts outside of sports." },
+                        { id: "D", name: "Emma - Athletics (Running)", content: "I’m a sprinter. To shave milliseconds off my time, every detail matters. I have to stick to a highly restrictive diet and a brutal weight-lifting schedule. When the starting gun fires, it’s an explosion of energy. I love the pure, individual focus; it’s purely about pushing your own physical limits." }
+                    ],
+                    answers: [1, 2, 0, 1, 0, 3, 2, 3, 1, 0]
+                },
+                {
+                    id: 6,
+                    title: "Four teenagers talk about overcoming a fear",
+                    instructions: "You are going to read an article in which teenagers talk about facing their fears. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager used a professional course to help them?",
+                        "Which teenager was forced to face their fear because of an unavoidable event?",
+                        "Which teenager says they are still not completely cured of their fear?",
+                        "Which teenager used gradual, controlled exposure to their fear?",
+                        "Which teenager’s fear was affecting their academic performance?",
+                        "Which teenager felt a sense of empowerment after succeeding?",
+                        "Which teenager’s fear was triggered by a specific insect?",
+                        "Which teenager needed their parents' physical presence for support?",
+                        "Which teenager felt embarrassed by their fear?",
+                        "Which teenager used breathing exercises to calm down?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Lucas - Heights", content: "I was terrified of heights. Even standing on a balcony made me dizzy. It was embarrassing when I couldn't join my friends on rollercoasters. I decided to try an indoor climbing wall. I started just going a few meters up, then jumping down. Gradually, I went higher each week. I still get a little nervous near the top, but I don't panic anymore." },
+                        { id: "B", name: "Maya - Public Speaking", content: "My fear of speaking in front of the class was so severe it was ruining my grades because I refused to do oral presentations. My teacher made me practice alone with her first, teaching me deep breathing techniques to stop my voice from shaking. When I finally presented to the class, it wasn't perfect, but the feeling of empowerment afterwards was amazing." },
+                        { id: "C", name: "Ethan - Spiders", content: "I had a severe phobia of spiders. If I saw one in my room, I couldn't sleep there. My parents actually enrolled me in a phobia workshop at the local zoo. We learned about how harmless most spiders are, and by the end of the day, I actually let a tarantula crawl on my hand! Understanding them cured the terror." },
+                        { id: "D", name: "Sophie - Flying", content: "I had never been on a plane until we had to fly to Australia for a family wedding. I couldn't avoid it. During takeoff, I was crying and gripping my mum’s hand so hard it hurt her. She talked to me calmly the whole time and distracted me with movies. Once we were cruising, I realized it wasn't as bad as I thought." }
+                    ],
+                    answers: [2, 3, 0, 0, 1, 1, 2, 3, 0, 1]
+                },
+                {
+                    id: 7,
+                    title: "Four teenagers talk about volunteering",
+                    instructions: "You are going to read an article in which teenagers talk about their volunteer work. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager works with people who are struggling financially?",
+                        "Which teenager says the work is physically exhausting?",
+                        "Which teenager enjoys hearing stories from the past?",
+                        "Which teenager helps younger students with their schoolwork?",
+                        "Which teenager feels sad about the amount of waste people produce?",
+                        "Which teenager says the experience made them appreciate their own life more?",
+                        "Which teenager feels proud when someone they help succeeds?",
+                        "Which teenager does their volunteering outdoors?",
+                        "Which teenager mentions organizing donations?",
+                        "Which teenager formed a strong bond with an older person?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Omar - Elderly Care Home", content: "I spend Saturday mornings playing board games with residents at a care home. Many of them don't get visitors. I've become very close to a gentleman named Arthur. He tells me incredible stories about living in London during the 1960s. It makes me realize how much history is just sitting in these homes, waiting to be shared." },
+                        { id: "B", name: "Lily - Park Clean-up", content: "I volunteer with a group that cleans up the local river and park. We spend hours pulling plastic bags and bottles out of the bushes. It is incredibly tiring, dirty work, and it honestly makes me quite depressed to see how carelessly people treat nature. But seeing the park look beautiful again makes the physical exhaustion worth it." },
+                        { id: "C", name: "Jake - Food Bank", content: "I help sort and pack boxes of basic supplies at the food bank. We provide meals for families who are facing severe financial difficulties and can't afford groceries. Seeing parents come in who are working two jobs but still can't feed their kids was a huge reality check for me. It makes me deeply grateful for everything I have." },
+                        { id: "D", name: "Ava - Tutoring", content: "I tutor primary school kids in reading and math after school. Sometimes it’s hard to keep their attention, and you have to explain the same thing five different ways. However, the exact moment a difficult concept 'clicks' in their head and their face lights up with understanding is the best feeling in the world. I feel so proud of them." }
+                    ],
+                    answers: [2, 1, 0, 3, 1, 2, 3, 1, 2, 0]
+                },
+                {
+                    id: 8,
+                    title: "Four teenagers talk about their future careers",
+                    instructions: "You are going to read an article in which teenagers talk about their dream jobs. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager wants a career that involves defending the truth?",
+                        "Which teenager is motivated by a desire to invent sustainable solutions?",
+                        "Which teenager acknowledges their chosen path requires many years of intense study?",
+                        "Which teenager wants to expose corruption and unfairness?",
+                        "Which teenager is fascinated by the design of structures?",
+                        "Which teenager wants to help people recover from physical trauma?",
+                        "Which teenager thrives under the pressure of tight deadlines?",
+                        "Which teenager says strong communication skills are essential for their job?",
+                        "Which teenager wants a career where they advocate for others in court?",
+                        "Which teenager likes understanding how complex systems work together?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Leo - Medicine", content: "I want to be a physiotherapist. I love the idea of helping athletes or accident victims rebuild their physical strength and recover from severe injuries. I know it requires at least six years of extremely demanding university study and exams, but the reward of helping someone walk again is completely worth the academic struggle." },
+                        { id: "B", name: "Zoe - Engineering", content: "I am constantly taking things apart to see how the mechanics work. My dream is to become a civil engineer. I am fascinated by how massive bridges and skyscrapers are designed to withstand incredible forces. I specifically want to focus on inventing new, eco-friendly building materials to make cities more sustainable for the future." },
+                        { id: "C", name: "Sam - Journalism", content: "I want to be an investigative journalist. I believe a free press is crucial for society. My goal is to uncover stories about corruption or injustice that people try to hide. The media industry is fast-paced, but I actually perform best when I'm under the stress of a tight deadline. You also need to be an excellent, persuasive writer." },
+                        { id: "D", name: "Mia - Law", content: "My ambition is to become a defense lawyer. I want to stand up in a courtroom and argue on behalf of people who can't defend themselves. I have a strong sense of justice and I believe everyone deserves a fair trial. The job demands perfect public speaking skills and the ability to think logically and quickly on your feet." }
+                    ],
+                    answers: [2, 1, 0, 2, 1, 0, 2, 3, 3, 1]
+                },
+                {
+                    id: 9,
+                    title: "Four teenagers talk about their pets",
+                    instructions: "You are going to read an article in which teenagers talk about their animals. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager has an animal with a physical disability?",
+                        "Which teenager's pet requires a highly specific temperature to survive?",
+                        "Which teenager adopted their pet after it had a difficult past?",
+                        "Which teenager's pet is surprisingly noisy?",
+                        "Which teenager has a pet that is not affectionate?",
+                        "Which teenager says their pet forces them to exercise?",
+                        "Which teenager's pet requires them to use visual signals to communicate?",
+                        "Which teenager's pet mimics human behavior?",
+                        "Which teenager enjoys the unique diet their pet eats?",
+                        "Which teenager felt an immediate bond when they first met their pet?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Ben - Bearded Dragon", content: "I have a lizard called a bearded dragon. He isn't exactly cuddly; he doesn't want to be petted like a dog. Caring for him is highly technical because his tank needs precise heat lamps to regulate his body temperature. I actually find feeding him live crickets and insects quite fascinating, though my mum hates it." },
+                        { id: "B", name: "Sara - Parrot", content: "My parrot, Charlie, is incredibly intelligent. He copies the sounds of the microwave, the doorbell, and he even mimics my dad's laugh perfectly. The downside is that he is unbelievably loud, especially early in the morning. He requires a lot of mental stimulation and toys, otherwise he gets bored and starts chewing the furniture." },
+                        { id: "C", name: "Tom - Rescue Dog", content: "We adopted Max from a shelter. He had been abandoned and was very anxious at first. When I sat with him in the shelter, he rested his head on my knee, and I knew instantly he was the one. He has endless energy, which is great because it drags me off the sofa to go for long runs in the woods." },
+                        { id: "D", name: "Emma - Deaf Cat", content: "My cat, Luna, was born completely deaf. Because she can't hear us call her name, we have to communicate using hand gestures or by stomping heavily on the floor so she feels the vibrations. She startles easily if you sneak up on her, but once she knows you're there, she is the most affectionate and loving cat imaginable." }
+                    ],
+                    answers: [3, 0, 2, 1, 0, 2, 3, 1, 0, 2]
+                },
+                {
+                    id: 10,
+                    title: "Four teenagers talk about playing a musical instrument",
+                    instructions: "You are going to read an article in which teenagers talk about the instruments they play. For questions 1-10, choose from the teenagers (A-D). The teenagers may be chosen more than once.",
+                    questions: [
+                        "Which teenager plays an instrument that requires strong lungs?",
+                        "Which teenager's instrument is physically awkward to hold?",
+                        "Which teenager complains about the noise level of their instrument?",
+                        "Which teenager plays jazz music?",
+                        "Which teenager plays an instrument that sets the timing for others?",
+                        "Which teenager says their instrument requires very precise finger positioning?",
+                        "Which teenager plays in an orchestra?",
+                        "Which teenager's instrument is very heavy to carry around?",
+                        "Which teenager appreciates the classical repertoire of their instrument?",
+                        "Which teenager says practicing annoys their family?"
+                    ],
+                    texts: [
+                        { id: "A", name: "Luke - Drums", content: "I am the drummer in a rock band. It is my job to keep the rhythm steady so the others don't lose the beat. It is a fantastic stress reliever, but my parents constantly complain about the deafening noise. I had to put soundproofing foam all over the garage walls just so my family could watch TV in peace." },
+                        { id: "B", name: "Elena - Violin", content: "I play first violin in the school orchestra. Learning the violin is notoriously difficult because there are no frets on the fingerboard; you have to place your fingers with absolute precision or it sounds terrible. Plus, tucking it under your chin for two-hour rehearsals is physically very uncomfortable and gives me neck aches. But I love playing classical symphonies." },
+                        { id: "C", name: "Tariq - Saxophone", content: "The saxophone is amazing because it's so versatile, but I mostly use it to play jazz improvisation. It takes a huge amount of breath control and lung power to get a clean, smooth sound. The biggest disadvantage is the weight; hauling a heavy brass instrument on the bus every day for lessons is exhausting." },
+                        { id: "D", name: "Maya - Flute", content: "I chose the flute because it has such a delicate, bird-like sound. It is incredibly light and easy to carry in my backpack, unlike the cello or tuba. It requires you to control the angle of your breath across the mouthpiece perfectly. I usually play classical pieces, but recently I’ve been trying some modern pop covers." }
+                    ],
+                    answers: [2, 1, 0, 2, 0, 1, 1, 2, 1, 0]
+                }
+            ]
+        };
+
+        const TAB_NAMES = ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5", "Part 6", "Part 7"];
+        const TAB_DESC = [
+            "Multiple Choice Cloze (8 questions)",
+            "Open Cloze (8 questions)",
+            "Word Formation (8 questions)",
+            "Key Word Transformations (6 questions)",
+            "Multiple Choice Reading (6 questions)",
+            "Gapped Text (6 questions)",
+            "Multiple Matching (10 questions)"
+        ];
+
+        function App() {
+            const [activeTab, setActiveTab] = useState(1);
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [userAnswers, setUserAnswers] = useState({});
+            const [isSubmitted, setIsSubmitted] = useState(false);
+            const [score, setScore] = useState(0);
+            
+            const currentPartKey = `part${activeTab}`;
+            const exams = examDatabase[currentPartKey];
+            const currentExam = exams[currentIndex];
+
+            useEffect(() => {
+                setUserAnswers({});
+                setIsSubmitted(false);
+                setScore(0);
+            }, [activeTab, currentIndex]);
+
+            const handleInputChange = (key, value) => {
+                if (!isSubmitted) {
+                    setUserAnswers(prev => ({ ...prev, [key]: value }));
+                }
+            };
+
+            const calculateScore = () => {
+                let currentScore = 0;
+                
+                if (activeTab === 1 || activeTab === 6 || activeTab === 7) {
+                    currentExam.answers.forEach((ans, idx) => {
+                        if (parseInt(userAnswers[idx]) === ans) currentScore++;
+                    });
+                } else if (activeTab === 5) {
+                    currentExam.questions.forEach((q, idx) => {
+                        if (parseInt(userAnswers[idx]) === q.ans) currentScore++;
+                    });
+                } else if (activeTab === 2 || activeTab === 3) {
+                    currentExam.answers.forEach((validAnswers, idx) => {
+                        const ua = (userAnswers[idx] || "").trim().toLowerCase();
+                        if (validAnswers.map(a => a.toLowerCase()).includes(ua)) currentScore++;
+                    });
+                } else if (activeTab === 4) {
+                    currentExam.questions.forEach((q, idx) => {
+                        const ua = (userAnswers[idx] || "").trim().toLowerCase().replace(/\s+/g, ' ');
+                        const isCorrect = q.answers.some(validAnsArray => 
+                            validAnsArray.map(a => a.toLowerCase()).includes(ua)
+                        );
+                        if (isCorrect) currentScore++;
+                    });
+                }
+
+                setScore(currentScore);
+                setIsSubmitted(true);
+            };
+
+            const maxScore = (activeTab === 4 || activeTab === 5) ? currentExam.questions.length : currentExam.answers.length;
+
+            const renderPart1 = () => {
+                const parts = currentExam.content.split(/\{(\d+)\}/g);
+                return (
+                    <div className="text-lg leading-loose text-justify">
+                        {parts.map((part, index) => {
+                            if (index % 2 === 1) {
+                                const qIdx = parseInt(part);
+                                const isCorrect = isSubmitted && parseInt(userAnswers[qIdx]) === currentExam.answers[qIdx];
+                                const isWrong = isSubmitted && !isCorrect;
+                                
+                                let selClass = "mx-1 px-2 py-1 border-2 rounded-md font-semibold bg-white cursor-pointer outline-none transition-colors";
+                                if (isSubmitted) {
+                                    selClass += isCorrect ? " border-green-500 text-green-700 bg-green-50" : " border-red-500 text-red-700 bg-red-50";
+                                } else {
+                                    selClass += " border-slate-300 focus:border-blue-500";
+                                }
+
+                                return (
+                                    <span key={qIdx} className="relative inline-block">
+                                        <span className="absolute -top-3 -left-1 text-xs font-bold text-slate-400">{qIdx + 1}</span>
+                                        <select 
+                                            className={selClass}
+                                            value={userAnswers[qIdx] !== undefined ? userAnswers[qIdx] : ""}
+                                            onChange={(e) => handleInputChange(qIdx, e.target.value)}
+                                            disabled={isSubmitted}
+                                        >
+                                            <option value="" disabled>-</option>
+                                            {currentExam.options[qIdx].map((opt, oIdx) => (
+                                                <option key={oIdx} value={oIdx}>{opt}</option>
+                                            ))}
+                                        </select>
+                                    </span>
+                                );
+                            }
+                            return <span key={index}>{part}</span>;
+                        })}
+                    </div>
+                );
+            };
+
+            const renderPart2And3 = () => {
+                const parts = currentExam.content.split(/\{(\d+)\}/g);
+                return (
+                    <div className="text-lg leading-loose text-justify">
+                        {parts.map((part, index) => {
+                            if (index % 2 === 1) {
+                                const qIdx = parseInt(part);
+                                const ua = (userAnswers[qIdx] || "").trim().toLowerCase();
+                                const valid = currentExam.answers[qIdx].map(a => a.toLowerCase());
+                                const isCorrect = isSubmitted && valid.includes(ua);
+                                const isWrong = isSubmitted && !isCorrect;
+                                
+                                let inpClass = "mx-1 w-28 px-2 py-1 text-center font-semibold bg-white border-2 rounded-md outline-none transition-colors";
+                                if (isSubmitted) {
+                                    inpClass += isCorrect ? " border-green-500 text-green-700 bg-green-50" : " border-red-500 text-red-700 bg-red-50";
+                                } else {
+                                    inpClass += " border-slate-300 focus:border-blue-500";
+                                }
+
+                                return (
+                                    <span key={qIdx} className="relative inline-block">
+                                        <span className="absolute -top-3 -left-1 text-xs font-bold text-slate-400">{qIdx + 1}</span>
+                                        <input 
+                                            type="text"
+                                            className={inpClass}
+                                            value={userAnswers[qIdx] || ""}
+                                            onChange={(e) => handleInputChange(qIdx, e.target.value)}
+                                            disabled={isSubmitted}
+                                            autoComplete="off"
+                                        />
+                                    </span>
+                                );
+                            }
+                            if (activeTab === 3) {
+                                const regex = /\(([A-Z]+)\)/g;
+                                if (regex.test(part)) {
+                                     const subParts = part.split(regex);
+                                     return <span key={index}>
+                                         {subParts.map((sp, i) => i%2===1 ? <strong key={i} className="text-slate-800 ml-1">({sp})</strong> : sp)}
+                                     </span>;
+                                }
+                            }
+                            return <span key={index}>{part}</span>;
+                        })}
+                    </div>
+                );
+            };
+
+            const renderPart4 = () => {
+                return (
+                    <div className="space-y-6">
+                        {currentExam.questions.map((q, idx) => {
+                            const ua = (userAnswers[idx] || "").trim().toLowerCase().replace(/\s+/g, ' ');
+                            const isCorrect = isSubmitted && q.answers.some(va => va.map(a => a.toLowerCase()).includes(ua));
+                            
+                            let inpClass = "mx-2 w-48 px-2 py-1 text-center font-bold bg-white border-2 rounded-md outline-none transition-colors";
+                            if (isSubmitted) {
+                                inpClass += isCorrect ? " border-green-500 text-green-700 bg-green-50" : " border-red-500 text-red-700 bg-red-50";
+                            } else {
+                                inpClass += " border-slate-300 focus:border-blue-500";
+                            }
+
+                            return (
+                                <div key={idx} className="bg-slate-100 p-4 rounded-lg">
+                                    <p className="mb-2"><span className="font-bold mr-2">{idx + 1}.</span>{q.leadIn}</p>
+                                    <div className="mb-2 bg-white px-3 py-1 inline-block border rounded font-mono font-bold text-blue-800">
+                                        {q.keyWord}
+                                    </div>
+                                    <div className="flex flex-wrap items-center mt-1">
+                                        <span>{q.leadOutStart}</span>
+                                        <input 
+                                            type="text" 
+                                            className={inpClass}
+                                            value={userAnswers[idx] || ""}
+                                            onChange={(e) => handleInputChange(idx, e.target.value)}
+                                            disabled={isSubmitted}
+                                        />
+                                        <span>{q.leadOutEnd}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                );
+            };
+
+            const renderPart5 = () => {
+                return (
+                    <div className="flex flex-col lg:flex-row gap-8">
+                        <div className="lg:w-1/2 bg-slate-100 p-6 rounded-lg text-justify whitespace-pre-wrap leading-loose">
+                            {currentExam.text}
+                        </div>
+                        <div className="lg:w-1/2 space-y-6">
+                            {currentExam.questions.map((q, idx) => {
+                                const isCorrect = isSubmitted && parseInt(userAnswers[idx]) === q.ans;
+                                
+                                return (
+                                    <div key={idx} className={`p-4 rounded-lg border-2 ${isSubmitted ? (isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200') : 'bg-white border-slate-200'}`}>
+                                        <p className="font-bold mb-3">{idx + 1}. {q.q}</p>
+                                        <div className="space-y-2">
+                                            {q.options.map((opt, oIdx) => (
+                                                <label key={oIdx} className="flex items-start gap-2 cursor-pointer">
+                                                    <input 
+                                                        type="radio" 
+                                                        name={`q${idx}`} 
+                                                        value={oIdx}
+                                                        checked={userAnswers[idx] === String(oIdx)}
+                                                        onChange={(e) => handleInputChange(idx, e.target.value)}
+                                                        disabled={isSubmitted}
+                                                        className="mt-1"
+                                                    />
+                                                    <span className={isSubmitted && oIdx === q.ans ? 'font-bold text-green-700' : ''}>{opt}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderPart6 = () => {
+                const parts = currentExam.text.split(/\{(\d+)\}/g);
+                return (
+                    <div className="flex flex-col lg:flex-row gap-8">
+                        <div className="lg:w-3/5 text-lg leading-loose text-justify">
+                            {parts.map((part, index) => {
+                                if (index % 2 === 1) {
+                                    const qIdx = parseInt(part);
+                                    const isCorrect = isSubmitted && parseInt(userAnswers[qIdx]) === currentExam.answers[qIdx];
+                                    
+                                    let selClass = "mx-2 px-3 py-1 font-bold border-2 rounded bg-white outline-none";
+                                    if (isSubmitted) {
+                                        selClass += isCorrect ? " border-green-500 text-green-700 bg-green-50" : " border-red-500 text-red-700 bg-red-50";
+                                    } else {
+                                        selClass += " border-blue-400 text-blue-800";
+                                    }
+
+                                    return (
+                                        <span key={qIdx} className="inline-flex items-center">
+                                            <span className="font-bold mr-1 text-slate-400">[{qIdx + 1}]</span>
+                                            <select 
+                                                className={selClass}
+                                                value={userAnswers[qIdx] !== undefined ? userAnswers[qIdx] : ""}
+                                                onChange={(e) => handleInputChange(qIdx, e.target.value)}
+                                                disabled={isSubmitted}
+                                            >
+                                                <option value="" disabled>---</option>
+                                                {currentExam.sentences.map((_, sIdx) => (
+                                                    <option key={sIdx} value={sIdx}>{String.fromCharCode(65 + sIdx)}</option>
+                                                ))}
+                                            </select>
+                                        </span>
+                                    );
+                                }
+                                return <span key={index}>{part}</span>;
+                            })}
+                        </div>
+                        <div className="lg:w-2/5 space-y-3 bg-slate-100 p-6 rounded-lg">
+                            <h3 className="font-bold text-lg mb-4">Sentences to insert:</h3>
+                            {currentExam.sentences.map((sentence, idx) => (
+                                <div key={idx} className="p-3 bg-white rounded shadow-sm border border-slate-200">
+                                    {sentence}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderPart7 = () => {
+                return (
+                    <div className="space-y-8">
+                        <div className="bg-slate-100 p-6 rounded-lg">
+                            <table className="w-full text-left">
+                                <tbody>
+                                    {currentExam.questions.map((q, idx) => {
+                                        const isCorrect = isSubmitted && parseInt(userAnswers[idx]) === currentExam.answers[idx];
+                                        let selClass = "p-1 font-bold border-2 rounded bg-white outline-none text-center w-16";
+                                        if (isSubmitted) {
+                                            selClass += isCorrect ? " border-green-500 text-green-700 bg-green-50" : " border-red-500 text-red-700 bg-red-50";
+                                        } else {
+                                            selClass += " border-slate-300";
+                                        }
+
+                                        return (
+                                            <tr key={idx} className="border-b border-slate-200 last:border-0">
+                                                <td className="py-3 pr-4 font-bold text-slate-500 w-8">{idx + 1}.</td>
+                                                <td className="py-3 pr-4">{q}</td>
+                                                <td className="py-3">
+                                                    <select 
+                                                        className={selClass}
+                                                        value={userAnswers[idx] !== undefined ? userAnswers[idx] : ""}
+                                                        onChange={(e) => handleInputChange(idx, e.target.value)}
+                                                        disabled={isSubmitted}
+                                                    >
+                                                        <option value="" disabled>-</option>
+                                                        {currentExam.texts.map((t, tIdx) => (
+                                                            <option key={tIdx} value={tIdx}>{t.id}</option>
+                                                        ))}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {currentExam.texts.map((t, idx) => (
+                                <div key={idx} className="bg-white border border-slate-200 p-6 rounded-lg shadow-sm text-justify">
+                                    <h3 className="font-bold text-xl mb-3 border-b pb-2 text-blue-800">
+                                        Text {t.id} - {t.name}
+                                    </h3>
+                                    <p className="leading-relaxed">{t.content}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            };
+
+            const getFeedback = () => {
+                if (activeTab === 1 || activeTab === 6 || activeTab === 7) {
+                    return currentExam.answers.map((ansIdx, idx) => (
+                        <div key={idx} className="mb-1">
+                            Q{idx + 1}: <span className="font-bold text-blue-600">
+                                {activeTab === 1 ? currentExam.options[idx][ansIdx] : 
+                                 activeTab === 6 ? String.fromCharCode(65 + ansIdx) : 
+                                 currentExam.texts[ansIdx].id}
+                            </span>
+                        </div>
+                    ));
+                } else if (activeTab === 2 || activeTab === 3) {
+                    return currentExam.answers.map((ansArray, idx) => (
+                        <div key={idx} className="mb-1">
+                            Q{idx + 1}: <span className="font-bold text-blue-600">{ansArray.join(" / ")}</span>
+                        </div>
+                    ));
+                } else if (activeTab === 4) {
+                    return currentExam.questions.map((q, idx) => (
+                        <div key={idx} className="mb-2 pb-2 border-b last:border-0 border-slate-200">
+                            Q{idx + 1}: <span className="font-bold text-blue-600">{q.answers[0][0]}</span>
+                        </div>
+                    ));
+                } else if (activeTab === 5) {
+                    return currentExam.questions.map((q, idx) => (
+                        <div key={idx} className="mb-1">
+                            Q{idx + 1}: <span className="font-bold text-blue-600">{String.fromCharCode(65 + q.ans)}</span>
+                        </div>
+                    ));
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 pb-12 flex flex-col">
+                    <header className="bg-blue-800 text-white shadow-md z-10 sticky top-0">
+                        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
+                            <BookOpen className="w-8 h-8 text-blue-200" />
+                            <div>
+                                <h1 className="text-2xl font-bold tracking-tight">B2 First for Schools Simulator</h1>
+                                <p className="text-blue-200 text-sm">Full Reading & Use of English Training</p>
+                            </div>
+                        </div>
+                        <div className="flex overflow-x-auto bg-blue-900 scrollbar-hide px-4 max-w-6xl mx-auto">
+                            {TAB_NAMES.map((name, idx) => {
+                                const partNum = idx + 1;
+                                const isActive = activeTab === partNum;
+                                return (
+                                    <button
+                                        key={partNum}
+                                        onClick={() => { setActiveTab(partNum); setCurrentIndex(0); }}
+                                        className={`px-5 py-3 font-semibold whitespace-nowrap transition-colors border-b-4 ${
+                                            isActive ? 'border-white text-white bg-blue-800' : 'border-transparent text-blue-300 hover:text-white hover:bg-blue-800/50'
+                                        }`}
+                                    >
+                                        {name}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </header>
+
+                    <main className="max-w-6xl w-full mx-auto px-4 mt-8 flex-1">
+                        <div className="flex flex-wrap justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 gap-4">
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-800">{currentExam.title}</h2>
+                                <p className="text-slate-500 text-sm font-medium">{TAB_DESC[activeTab - 1]}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button 
+                                    onClick={() => setCurrentIndex(prev => prev - 1)} 
+                                    disabled={currentIndex === 0}
+                                    className="p-2 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-50"
+                                >
+                                    <ChevronLeft className="w-5 h-5" />
+                                </button>
+                                <span className="font-bold mx-2">Exam {currentIndex + 1} / {exams.length}</span>
+                                <button 
+                                    onClick={() => setCurrentIndex(prev => prev + 1)} 
+                                    disabled={currentIndex === exams.length - 1}
+                                    className="p-2 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-50"
+                                >
+                                    <ChevronRight className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                            <div className="bg-blue-50 border-b border-blue-100 p-4 flex gap-3 text-blue-900">
+                                <AlertCircle className="w-6 h-6 flex-shrink-0" />
+                                <p className="font-medium text-sm sm:text-base">{currentExam.instructions}</p>
+                            </div>
+                            
+                            <div className="p-6 md:p-8">
+                                {activeTab === 1 && renderPart1()}
+                                {(activeTab === 2 || activeTab === 3) && renderPart2And3()}
+                                {activeTab === 4 && renderPart4()}
+                                {activeTab === 5 && renderPart5()}
+                                {activeTab === 6 && renderPart6()}
+                                {activeTab === 7 && renderPart7()}
+                            </div>
+
+                            <div className="bg-slate-50 border-t border-slate-200 p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                {!isSubmitted ? (
+                                    <button
+                                        onClick={calculateScore}
+                                        className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition-transform hover:scale-105"
+                                    >
+                                        Comprobar respuestas
+                                    </button>
+                                ) : (
+                                    <div className="flex items-center gap-3 text-lg font-bold">
+                                        <span>Tu puntuación:</span>
+                                        <span className={`px-4 py-2 rounded-lg text-white ${score === maxScore ? 'bg-green-500' : score >= maxScore/2 ? 'bg-yellow-500' : 'bg-red-500'}`}>
+                                            {score} / {maxScore}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {isSubmitted && (
+                            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 animate-fade-in mb-8">
+                                <h3 className="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Soluciones Correctas</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                                    {getFeedback()}
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    <footer className="text-center py-6 text-slate-500 text-sm mt-auto">
+                        <p className="mb-1">Motor de Exámenes B2 First for Schools</p>
+                        <p>Created by Oscar del Estal (<a href="mailto:oestal@xtec.cat" className="hover:text-blue-600 transition-colors font-medium">oestal@xtec.cat</a>)</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
